@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     }
 }
 
+
 rootProject.name = "Dagger2-app"
-include(":app")
-include(":app:data")
+include(":home")
+include(":profile")
+include(":wrapper")
