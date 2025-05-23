@@ -8,8 +8,8 @@ import android.view.ViewGroup
 
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.dagger2_app.data.local.Injection
 
-import com.example.dagger2_app.di.MyApplication
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.resource.DBResult
 import com.example.dagger2_app.ui.adapters.NotesAdapter
@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        (requireActivity().application as MyApplication).daggerAppComponent.inject(this)
+        (requireActivity().application as Injection).inject(this)
         setNavigation()
 
         return binding.root
@@ -45,7 +45,15 @@ class HomeFragment : Fragment() {
                 is DBResult.Error -> {
                     Snackbar.make(requireView(),it.message,Snackbar.LENGTH_SHORT).show()
                 }
-                is DBResult.Success -> {setAdapter(it.data)}
+                is DBResult.Success -> {
+                    if(it.data.isNotEmpty()){
+                        binding.txtNotes.visibility = View.GONE
+                        setAdapter(it.data)
+                    }else{
+                        binding.txtNotes.visibility = View.VISIBLE
+                    }
+
+                }
 //                DBResult.Loading -> TODO()
             }
         }

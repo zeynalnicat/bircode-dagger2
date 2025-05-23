@@ -3,8 +3,8 @@ package com.example.profile.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.profile.data.local.ProfileDao
 import com.example.profile.data.local.SharedPreferenceHelper
+
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(private val sharedPreferenceHelper: SharedPreferenceHelper): ViewModel() {

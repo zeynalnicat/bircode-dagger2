@@ -3,11 +3,17 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
+    id("androidx.room")
 }
 
 android {
     namespace = "com.example.navigation"
     compileSdk = 35
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
 
     defaultConfig {
         applicationId = "com.example.navigation"
@@ -55,5 +61,13 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.dagger)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.dagger.compiler)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    annotationProcessor(libs.androidx.room.compiler.v260)
     androidTestImplementation(libs.androidx.espresso.core)
 }

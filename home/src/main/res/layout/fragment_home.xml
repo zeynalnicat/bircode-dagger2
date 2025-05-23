@@ -51,4 +51,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/txt"
         app:layout_constraintStart_toStartOf="@+id/rvNotes"
         app:layout_constraintTop_toTopOf="@+id/txt" />
+
+    <TextView
+        android:id="@+id/txtNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:visibility="gone"
+        android:text="No notes found. Please add notes to see them"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

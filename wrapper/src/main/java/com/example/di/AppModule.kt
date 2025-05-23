@@ -1,17 +1,21 @@
-package com.example.profile.di
+package com.example.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.profile.data.local.ProfileDao
-import com.example.profile.data.local.RoomDb
+import com.example.dagger2_app.data.local.Injection
+import com.example.dagger2_app.data.local.NoteDao
+import com.example.dagger2_app.ui.adapters.NotesAdapter
+import com.example.data.local.RoomDb
 import com.example.profile.data.local.SharedPreferenceHelper
+import com.example.profile.data.local.ProfileDao
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 
 @Module
-class ProfileAppModule(private val context: Context) {
+class AppModule(private val context: Context) {
 
 
     @Singleton
@@ -42,5 +46,19 @@ class ProfileAppModule(private val context: Context) {
     fun provideSharedPref(context: Context): SharedPreferenceHelper{
         return SharedPreferenceHelper(context)
     }
+
+    @Singleton
+    @Provides
+    fun provideNoteDao(roomDb: RoomDb): NoteDao {
+        return roomDb.noteDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideNotesAdapter(): NotesAdapter{
+        return NotesAdapter()
+    }
+
+
 
 }

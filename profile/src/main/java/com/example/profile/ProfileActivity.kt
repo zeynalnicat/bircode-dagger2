@@ -9,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 
 import com.bumptech.glide.Glide
+import com.example.profile.data.ProfileInjection
 import com.example.profile.databinding.ActivityProfileBinding
-import com.example.profile.di.ProfileApplication
+
 import com.example.profile.ui.ProfileViewModel
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-        (application as ProfileApplication ).appComponent.inject(this)
+       (application as ProfileInjection).inject(this)
         enableEdgeToEdge()
         setContentView(binding.root)
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.m)) { v, insets ->

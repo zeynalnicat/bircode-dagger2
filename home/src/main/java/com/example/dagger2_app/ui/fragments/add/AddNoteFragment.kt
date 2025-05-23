@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.dagger2_app.di.MyApplication
+import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.models.NoteDTO
 
 import com.example.dagger2_app.resource.DBResult
@@ -23,7 +23,7 @@ class AddNoteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAddBinding.inflate(layoutInflater)
-        (requireActivity().application as MyApplication).daggerAppComponent.inject(this)
+        (requireActivity().application as Injection).inject(this)
         return binding.root
     }
 
