@@ -75,6 +75,10 @@ class HomeFragment : Fragment() {
         binding.fbAdd.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
         }
+
+        binding.btnBack.setOnClickListener{
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
 

@@ -8,7 +8,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/icon_back"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <FrameLayout
         android:id="@+id/profileImageContainer"
         android:layout_width="120dp"

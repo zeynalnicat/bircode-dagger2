@@ -39,6 +39,10 @@ class ProfileActivity : AppCompatActivity() {
 //            insets
 //        }
 
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         binding.profileImageContainer.setOnClickListener {
             selectImageLauncher.launch("image/*")
         }
