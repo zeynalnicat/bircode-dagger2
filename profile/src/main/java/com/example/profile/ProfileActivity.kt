@@ -6,13 +6,15 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
 import com.example.profile.data.ProfileInjection
 import com.example.profile.databinding.ActivityProfileBinding
+import com.example.profile.ui.ProfileIntent
 
 import com.example.profile.ui.ProfileViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileActivity : AppCompatActivity() {
@@ -21,10 +23,11 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var viewModel: ProfileViewModel
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            viewModel.addImgUri(it.toString())
+            viewModel.onIntent(ProfileIntent.OnChangeProfileUri(it.toString()))
             binding.profileImageView.setImageURI(it)
         }
     }
+
 
     private lateinit var binding: ActivityProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +42,28 @@ class ProfileActivity : AppCompatActivity() {
 //            insets
 //        }
 
+
+
+        lifecycleScope.launch {
+            viewModel.state.collect { state->
+                if(state.profileUri.isEmpty()){
+                    binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
+                }
+                else{
+                    Glide.with(this@ProfileActivity)
+                        .load(state.profileUri)
+                        .into(binding.profileImageView)
+                }
+
+                if(state.username.isNotEmpty()){
+                    binding.editName.setText(state.username)
+                }
+
+            }
+
+
+        }
+
         binding.btnBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -47,24 +72,10 @@ class ProfileActivity : AppCompatActivity() {
             selectImageLauncher.launch("image/*")
         }
 
-        viewModel.imgUri.observe(this){
-            if(it.isEmpty()) binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
-            else{
-                Glide.with(this)
-                    .load(it)
-                    .into(binding.profileImageView)
-            }
-        }
 
-        viewModel.name.observe(this){
-            if(it.isNotEmpty()){
-                binding.editName.setText(it)
-            }
-
-        }
 
         binding.saveButton.setOnClickListener {
-            viewModel.addName(binding.editName.text.toString())
+            viewModel.onIntent(ProfileIntent.OnChangeName(binding.editName.text.toString()))
 
         }
 
