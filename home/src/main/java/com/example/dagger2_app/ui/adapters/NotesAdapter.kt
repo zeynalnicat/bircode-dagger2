@@ -10,6 +10,13 @@ import com.example.home.databinding.ItemNotesLayoutBinding
 
 class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
+     interface ICallback {
+        fun remove(noteDTO: NoteDTO)
+    }
+
+    private var listener: ICallback? = null
+
+
     private val diffCallBack = object : DiffUtil.ItemCallback<NoteDTO>() {
         override fun areItemsTheSame(oldItem: NoteDTO, newItem: NoteDTO): Boolean {
             return oldItem === newItem
@@ -43,10 +50,17 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
         fun bind(noteDTO: NoteDTO) {
             binding.tvTitle.text = noteDTO.title
             binding.tvDescription.text = noteDTO.description
+            binding.btnRemove.setOnClickListener {
+                listener?.remove(noteDTO)
+            }
         }
     }
 
     fun setList(noteList: List<NoteDTO>) {
         diffUtil.submitList(noteList)
+    }
+
+    fun setCallBack(callBack: ICallback){
+        listener = callBack
     }
 }

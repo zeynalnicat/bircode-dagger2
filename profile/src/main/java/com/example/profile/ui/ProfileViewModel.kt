@@ -39,7 +39,8 @@ class ProfileViewModel @Inject constructor(private val sharedPreferenceHelper: S
 
     private fun addName(name:String){
         sharedPreferenceHelper.putString(SharedPreferenceHelper.NAME,name)
-        _state.update { it.copy(username = name) }
+        _state.update { it.copy(username = name, insertion = true) }
+
     }
 
 }

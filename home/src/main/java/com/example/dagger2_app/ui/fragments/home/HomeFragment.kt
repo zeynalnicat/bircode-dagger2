@@ -5,20 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dagger2_app.data.local.Injection
 
 import com.example.dagger2_app.models.NoteDTO
-import com.example.dagger2_app.resource.DBResult
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
 import com.example.home.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), NotesAdapter.ICallback {
     private lateinit var binding: FragmentHomeBinding
 
 
@@ -40,26 +42,28 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.notes.observe(viewLifecycleOwner){
-            when(it){
-                is DBResult.Error -> {
-                    Snackbar.make(requireView(),it.message,Snackbar.LENGTH_SHORT).show()
-                }
-                is DBResult.Success -> {
-                    if(it.data.isNotEmpty()){
-                        binding.txtNotes.visibility = View.GONE
-                        setAdapter(it.data)
-                    }else{
-                        binding.txtNotes.visibility = View.VISIBLE
-                    }
 
+        lifecycleScope.launch {
+            homeViewModel.state.collect {
+                if(it.error.isNotEmpty()){
+                    val snackbar = Snackbar.make(requireView(),it.error,Snackbar.LENGTH_SHORT)
+                    snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
+                    snackbar.setBackgroundTint(resources.getColor(R.color.red))
+                    snackbar.show()
                 }
-//                DBResult.Loading -> TODO()
+
+                if(it.notes.isNotEmpty()){
+                    binding.txtNotes.visibility = View.GONE
+                    setAdapter(it.notes)
+                }else{
+                    binding.txtNotes.visibility = View.VISIBLE
+                }
             }
+
         }
 
 
-        homeViewModel.getNotes()
+        homeViewModel.onIntent(HomeIntent.OnGetDto)
 
 
 
@@ -67,6 +71,7 @@ class HomeFragment : Fragment() {
 
     private fun setAdapter(notes:List<NoteDTO>){
         adapter.setList(notes)
+        adapter.setCallBack(this)
         binding.rvNotes.layoutManager = GridLayoutManager(requireContext(),1)
         binding.rvNotes.adapter = adapter
     }
@@ -79,6 +84,10 @@ class HomeFragment : Fragment() {
         binding.btnBack.setOnClickListener{
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    override fun remove(noteDTO: NoteDTO) {
+         homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
     }
 
 

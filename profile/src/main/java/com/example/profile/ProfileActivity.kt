@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import com.example.profile.databinding.ActivityProfileBinding
 import com.example.profile.ui.ProfileIntent
 
 import com.example.profile.ui.ProfileViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +48,13 @@ class ProfileActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             viewModel.state.collect { state->
+                if(state.insertion){
+                    val snackbar = Snackbar.make(binding.root,"Successfully changed", Snackbar.LENGTH_SHORT)
+                    snackbar.view.setBackgroundColor(ContextCompat.getColor(this@ProfileActivity, R.color.green))
+                    snackbar.setBackgroundTint(resources.getColor(R.color.green))
+                    snackbar.show()
+                }
+
                 if(state.profileUri.isEmpty()){
                     binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
                 }
