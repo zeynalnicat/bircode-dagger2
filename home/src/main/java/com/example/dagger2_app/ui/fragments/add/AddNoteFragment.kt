@@ -24,6 +24,7 @@ class AddNoteFragment : Fragment() {
     ): View? {
         binding = FragmentAddBinding.inflate(layoutInflater)
         (requireActivity().application as Injection).inject(this)
+        setNavigation()
         return binding.root
     }
 
@@ -44,6 +45,12 @@ class AddNoteFragment : Fragment() {
 
 
 
+    }
+
+    private fun setNavigation(){
+        binding.btnBack.setOnClickListener {
+             findNavController().popBackStack()
+        }
     }
 
 
