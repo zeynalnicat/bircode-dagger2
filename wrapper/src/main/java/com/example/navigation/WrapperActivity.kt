@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.data.local.Injection
 import com.example.di.AppComponent
 import com.example.di.InjectionImpl
@@ -29,7 +30,7 @@ class WrapperActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnNote.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, MiddleActivity::class.java))
         }
 
         binding.btnProfile.setOnClickListener {

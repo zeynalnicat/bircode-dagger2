@@ -62,7 +62,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
         }
 
-
         homeViewModel.onIntent(HomeIntent.OnGetDto)
 
 
@@ -83,6 +82,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
         binding.btnBack.setOnClickListener{
             requireActivity().onBackPressedDispatcher.onBackPressed()
+
         }
     }
 

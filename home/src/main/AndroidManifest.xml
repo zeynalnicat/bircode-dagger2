@@ -15,6 +15,11 @@
         <activity
             android:name="com.example.dagger2_app.HomeActivity"
             android:exported="true">
+        </activity>
+
+        <activity
+            android:name="com.example.dagger2_app.MiddleActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
