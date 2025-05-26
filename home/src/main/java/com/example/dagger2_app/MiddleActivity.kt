@@ -1,9 +1,13 @@
 package com.example.dagger2_app
 
+import android.app.Activity
 import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,6 +17,8 @@ import com.example.home.databinding.ActivityMiddleBinding
 
 class MiddleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMiddleBinding
+
+    private lateinit var resultLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,22 +31,24 @@ class MiddleActivity : AppCompatActivity() {
             insets
         }
 
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+             if(it.resultCode == RESULT_OK){
+                 val userId = it.data?.getIntExtra("userId",-1)
+                 binding.txtUserId.text = "UserId: ${userId}"
+             }
+        }
+
+
         binding.btnNext.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(this , HomeActivity::class.java)
+
+            resultLauncher.launch(intent)
         }
 
         binding.imgBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+           onBackPressedDispatcher.onBackPressed()
         }
     }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?,
-        caller: ComponentCaller
-    ) {
-        super.onActivityResult(requestCode, resultCode, data, caller)
-    }
+
 }

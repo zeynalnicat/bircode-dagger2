@@ -1,5 +1,7 @@
 package com.example.dagger2_app.ui.fragments.home
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +21,7 @@ import com.example.home.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 class HomeFragment : Fragment(), NotesAdapter.ICallback {
     private lateinit var binding: FragmentHomeBinding
@@ -81,7 +84,11 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         }
 
         binding.btnBack.setOnClickListener{
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            val intent = Intent()
+            intent.putExtra("userId", Random.nextInt(0,100))
+            requireActivity().setResult(RESULT_OK,intent)
+            requireActivity().finish()
+
 
         }
     }
