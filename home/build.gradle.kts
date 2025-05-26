@@ -65,4 +65,6 @@ dependencies {
 
     implementation (libs.androidx.recyclerview)
     implementation (libs.androidx.recyclerview.selection)
+
+    implementation("com.github.terrakok:cicerone:7.1")
 }

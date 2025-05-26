@@ -12,12 +12,15 @@ import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.Injection
 
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
 import com.example.home.databinding.FragmentHomeBinding
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,12 +35,15 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     @Inject
     lateinit var homeViewModel: HomeViewModel
 
+    private lateinit var homeNavigator: HomeNavigator
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         (requireActivity().application as Injection).inject(this)
+        homeNavigator = requireActivity().application as HomeNavigator
         setNavigation()
 
         return binding.root
@@ -81,13 +87,18 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     private fun setNavigation(){
         binding.fbAdd.setOnClickListener {
 //            findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
+            homeNavigator.navigateToAddNotesFragment()
         }
 
         binding.btnBack.setOnClickListener{
-            val intent = Intent()
-            intent.putExtra("userId", Random.nextInt(0,100))
-            requireActivity().setResult(RESULT_OK,intent)
-            requireActivity().finish()
+//            val intent = Intent()
+//            intent.putExtra("userId", Random.nextInt(0,100))
+//            requireActivity().setResult(RESULT_OK,intent)
+//            requireActivity().finish()\
+
+            (requireActivity() as HomeActivity).onNavigateBack()
+
+
 
 
         }
@@ -96,6 +107,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     override fun remove(noteDTO: NoteDTO) {
          homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
     }
+
 
 
 }

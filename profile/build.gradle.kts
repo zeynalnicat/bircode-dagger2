@@ -70,4 +70,6 @@ dependencies {
 
     implementation(libs.glide)
 
+    implementation("com.github.terrakok:cicerone:7.1")
+
 }

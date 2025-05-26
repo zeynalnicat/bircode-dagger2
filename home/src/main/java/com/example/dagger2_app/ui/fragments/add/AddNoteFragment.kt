@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 
 import androidx.navigation.fragment.findNavController
+import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.models.NoteDTO
 import com.example.home.R
@@ -66,7 +67,8 @@ class AddNoteFragment : Fragment() {
 
     private fun setNavigation(){
         binding.btnBack.setOnClickListener {
-             findNavController().popBackStack()
+//             findNavController().popBackStack()
+            (requireActivity().application as HomeNavigator).navigateBackToHomeFragment()
         }
     }
 

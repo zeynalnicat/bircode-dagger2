@@ -15,6 +15,7 @@ import com.example.profile.databinding.ActivityProfileBinding
 import com.example.profile.ui.ProfileIntent
 
 import com.example.profile.ui.ProfileViewModel
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,20 +31,19 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private val appNavigator = AppNavigator(this,R.id.main)
+    private lateinit var profileNavigator: ProfileNavigator
+
 
     private lateinit var binding: ActivityProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
+        profileNavigator =  application as ProfileNavigator
+        profileNavigator.injectNavigator(appNavigator)
        (application as ProfileInjection).inject(this)
         enableEdgeToEdge()
         setContentView(binding.root)
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.m)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
-
 
 
         lifecycleScope.launch {
@@ -74,7 +74,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.btnBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            profileNavigator.navigateBackToActivity()
         }
 
         binding.profileImageContainer.setOnClickListener {

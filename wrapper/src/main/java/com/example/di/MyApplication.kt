@@ -1,7 +1,9 @@
 package com.example.di
 
 import android.app.Application
+import com.example.Screens
 import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.HomeAppModule
@@ -9,15 +11,18 @@ import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.ui.fragments.add.AddNoteFragment
 import com.example.dagger2_app.ui.fragments.home.HomeFragment
 import com.example.profile.ProfileActivity
+import com.example.profile.ProfileNavigator
 import com.example.profile.data.ProfileInjection
 import com.example.profile.di.ProfileAppModule
 import com.example.profile.di.ProfileViewModelModule
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
+import com.github.terrakok.cicerone.Screen
+import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MyApplication: Application(), Injection, ProfileInjection {
+class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, ProfileNavigator {
 
     companion object {
         lateinit var cicerone: Cicerone<Router>
@@ -60,4 +65,33 @@ class MyApplication: Application(), Injection, ProfileInjection {
     override fun inject(profileActivity: ProfileActivity) {
         profileInjection.inject(profileActivity)
     }
+
+    override fun navigateForward() {
+        router.navigateTo(Screens.FirstNextActivity())
+    }
+
+
+    override fun injectNavigator(appNavigator: AppNavigator) {
+         navigatorHolder.setNavigator(appNavigator)
+    }
+
+    override fun navigateToAddNotesFragment() {
+         router.navigateTo(Screens.AddNoteScreen())
+    }
+
+    override fun navigateToHomeFragment() {
+         router.navigateTo(Screens.NotesScreen())
+    }
+
+
+    override fun navigateBackToActivity() {
+        router.finishChain()
+    }
+
+    override fun navigateBackToHomeFragment() {
+        router.backTo(Screens.NotesScreen())
+    }
+
+
+
 }

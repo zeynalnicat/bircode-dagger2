@@ -36,7 +36,6 @@ class WrapperActivity : AppCompatActivity() {
             MyApplication.router.navigateTo(Screens.Second())
         }
     }
-
     override fun onResumeFragments() {
         super.onResumeFragments()
         MyApplication.navigatorHolder.setNavigator(navigator)
