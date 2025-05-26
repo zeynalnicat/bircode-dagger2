@@ -2,6 +2,7 @@ package com.example.di
 
 import android.app.Application
 import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.ui.fragments.add.AddNoteFragment
 import com.example.dagger2_app.ui.fragments.home.HomeFragment
@@ -20,6 +21,7 @@ class InjectionImpl(private val appComponent: AppComponent): Injection, ProfileI
     override fun inject(addNoteFragment: AddNoteFragment) {
         appComponent.inject(addNoteFragment)
     }
+
 
     override fun inject(profileActivity: ProfileActivity) {
         appComponent.inject(profileActivity)

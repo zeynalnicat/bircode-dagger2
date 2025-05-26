@@ -40,6 +40,7 @@ class MiddleActivity : AppCompatActivity() {
 
 
         binding.btnNext.setOnClickListener {
+//            (application as Injection).ro
             val intent = Intent(this , HomeActivity::class.java)
 
             resultLauncher.launch(intent)

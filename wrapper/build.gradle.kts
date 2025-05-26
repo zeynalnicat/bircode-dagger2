@@ -70,4 +70,6 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     annotationProcessor(libs.androidx.room.compiler.v260)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation("com.github.terrakok:cicerone:7.1")
 }

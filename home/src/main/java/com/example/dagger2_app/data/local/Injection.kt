@@ -2,6 +2,7 @@ package com.example.dagger2_app.data.local
 
 import android.app.Application
 import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.ui.fragments.add.AddNoteFragment
 import com.example.dagger2_app.ui.fragments.home.HomeFragment
 

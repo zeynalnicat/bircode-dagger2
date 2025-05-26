@@ -80,7 +80,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     private fun setNavigation(){
         binding.fbAdd.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
+//            findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
         }
 
         binding.btnBack.setOnClickListener{
