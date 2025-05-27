@@ -3,6 +3,7 @@ package com.example.dagger2_app.ui.fragments.home
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -95,8 +96,11 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 //            intent.putExtra("userId", Random.nextInt(0,100))
 //            requireActivity().setResult(RESULT_OK,intent)
 //            requireActivity().finish()\
-
-            (requireActivity() as HomeActivity).onNavigateBack()
+//            homeNavigator.getRouter().setResultListener(RESULT_KEY) { data ->
+//                view.showPhoto(data as Bitmap)
+//            }
+//            router.navigateTo(SelectPhoto(RESULT_KEY))
+            (requireActivity() as HomeActivity).finish()
 
 
 
@@ -106,6 +110,16 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     override fun remove(noteDTO: NoteDTO) {
          homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.e("fragment","detached")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("fragment","destroyed")
     }
 
 

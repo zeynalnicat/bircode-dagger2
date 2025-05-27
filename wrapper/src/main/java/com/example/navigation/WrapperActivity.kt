@@ -29,11 +29,11 @@ class WrapperActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnNote.setOnClickListener {
-            MyApplication.router.navigateTo(Screens.First())
+            MyApplication.router.navigateTo(Screens.MiddleActivityScreen())
         }
 
         binding.btnProfile.setOnClickListener {
-            MyApplication.router.navigateTo(Screens.Second())
+            MyApplication.router.navigateTo(Screens.ProfileActivityScreen())
         }
     }
     override fun onResumeFragments() {

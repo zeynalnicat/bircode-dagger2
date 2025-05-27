@@ -67,7 +67,7 @@ class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, 
     }
 
     override fun navigateForward() {
-        router.navigateTo(Screens.FirstNextActivity())
+        router.navigateTo(Screens.HomeActivityScreen())
     }
 
 
@@ -76,11 +76,11 @@ class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, 
     }
 
     override fun navigateToAddNotesFragment() {
-         router.navigateTo(Screens.AddNoteScreen())
+         router.navigateTo(Screens.AddNotesFragmentScreen())
     }
 
     override fun navigateToHomeFragment() {
-         router.navigateTo(Screens.NotesScreen())
+         router.navigateTo(Screens.NotesFragmentScreen())
     }
 
 
@@ -88,8 +88,12 @@ class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, 
         router.finishChain()
     }
 
+    override fun getRouter(): Router {
+        return router
+    }
+
     override fun navigateBackToHomeFragment() {
-        router.backTo(Screens.NotesScreen())
+        router.backTo(Screens.NotesFragmentScreen())
     }
 
 

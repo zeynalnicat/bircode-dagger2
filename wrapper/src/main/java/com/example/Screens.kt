@@ -10,10 +10,10 @@ import com.github.terrakok.cicerone.androidx.ActivityScreen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 object Screens {
-    fun First() = ActivityScreen("First"){ Intent(it, MiddleActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP } }
-    fun Second() = ActivityScreen("Second") {Intent(it, ProfileActivity::class.java)}
-    fun FirstNextActivity() = ActivityScreen("FirstNext") { Intent(it, HomeActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP } }
-    fun NotesScreen() = FragmentScreen{ HomeFragment() }
-    fun AddNoteScreen() = FragmentScreen { AddNoteFragment()}
+    fun MiddleActivityScreen() = ActivityScreen("First"){ Intent(it, MiddleActivity::class.java)}
+    fun ProfileActivityScreen() = ActivityScreen("Second") {Intent(it, ProfileActivity::class.java)}
+    fun HomeActivityScreen() = ActivityScreen("FirstNext") { Intent(it, HomeActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP } }
+    fun NotesFragmentScreen() = FragmentScreen{ HomeFragment() }
+    fun AddNotesFragmentScreen() = FragmentScreen { AddNoteFragment()}
 
 }
