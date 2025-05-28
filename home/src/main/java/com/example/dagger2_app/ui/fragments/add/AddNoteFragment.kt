@@ -14,6 +14,7 @@ import com.example.dagger2_app.models.NoteDTO
 import com.example.home.R
 
 import com.example.home.databinding.FragmentAddBinding
+import com.github.terrakok.cicerone.Router
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,10 @@ class AddNoteFragment : Fragment() {
     private lateinit var binding:FragmentAddBinding
     @Inject
     lateinit var viewModel: AddNoteViewModel
+
+
+    @Inject
+    lateinit var router: Router
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,8 +72,7 @@ class AddNoteFragment : Fragment() {
 
     private fun setNavigation(){
         binding.btnBack.setOnClickListener {
-//             findNavController().popBackStack()
-            (requireActivity().application as HomeNavigator).navigateBackToHomeFragment()
+            router.exit()
         }
     }
 

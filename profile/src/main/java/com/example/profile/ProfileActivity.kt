@@ -31,16 +31,12 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private val appNavigator = AppNavigator(this,R.id.main)
-    private lateinit var profileNavigator: ProfileNavigator
 
 
     private lateinit var binding: ActivityProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-        profileNavigator =  application as ProfileNavigator
-        profileNavigator.injectNavigator(appNavigator)
        (application as ProfileInjection).inject(this)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -74,7 +70,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.btnBack.setOnClickListener {
-            profileNavigator.navigateBackToActivity()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.profileImageContainer.setOnClickListener {

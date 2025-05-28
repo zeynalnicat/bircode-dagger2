@@ -15,22 +15,30 @@ import com.example.dagger2_app.data.local.Injection
 import com.example.home.R
 import com.example.home.databinding.ActivityMiddleBinding
 import com.github.terrakok.cicerone.Navigator
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import javax.inject.Inject
 
 class MiddleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMiddleBinding
 
     private lateinit var resultLauncher : ActivityResultLauncher<Intent>
+
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+
+    @Inject
+    lateinit var router: Router
+
     private val appNavigator = AppNavigator(this,R.id.main)
 
-    private lateinit var homeNavigator: HomeNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding= ActivityMiddleBinding.inflate(layoutInflater)
-        homeNavigator = application as HomeNavigator
-        homeNavigator.injectNavigator(appNavigator)
+        (application as Injection).inject(this)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -47,18 +55,23 @@ class MiddleActivity : AppCompatActivity() {
 
 
         binding.btnNext.setOnClickListener {
-//
-            homeNavigator.navigateForward()
-//            val intent = Intent(this , HomeActivity::class.java)
-//
-//
-//            resultLauncher.launch(intent)
+
+             router.navigateTo(HomeNavigator.HomeActivityScreen())
         }
 
         binding.imgBack.setOnClickListener {
-//           onBackPressedDispatcher.onBackPressed()
-            homeNavigator.navigateBackToActivity()
+              onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(appNavigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
     }
 
 

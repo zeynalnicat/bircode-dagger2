@@ -1,37 +1,35 @@
 package com.example.dagger2_app
 
-import android.app.Fragment
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.dagger2_app.data.local.Injection
-import com.example.dagger2_app.ui.fragments.home.HomeFragment
 import com.example.home.R
 import com.example.home.databinding.ActivityMainBinding
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import javax.inject.Inject
 
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
+    @Inject
+    lateinit var router: Router
+
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
     private val appNavigator = object : AppNavigator(this,R.id.fragmentContainerView){
-        override fun back() {
-            super.back()
-        }
     }
-
-
-    private lateinit var homeNavigator: HomeNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as Injection).inject(this)
-        homeNavigator = application as HomeNavigator
-        homeNavigator.injectNavigator(appNavigator)
+
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -43,16 +41,21 @@ class HomeActivity : AppCompatActivity() {
 
 
         if(savedInstanceState==null){
-            homeNavigator.navigateToHomeFragment()
+            router.navigateTo(HomeNavigator.NotesFragmentScreen())
         }
 
-
-
-
-
-
-
     }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(appNavigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
+    }
+
 
 
 

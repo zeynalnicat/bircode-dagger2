@@ -1,6 +1,7 @@
 package com.example.di
 
 import com.example.dagger2_app.HomeActivity
+import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.ui.fragments.add.AddNoteFragment
@@ -13,7 +14,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [HomeAppModule::class, HomeViewModelModule::class, ProfileAppModule::class, ProfileViewModelModule::class])
+@Component(modules = [HomeAppModule::class, HomeViewModelModule::class, ProfileAppModule::class, ProfileViewModelModule::class, NavigationModule::class])
 interface AppComponent {
 
     fun inject(activity: ProfileActivity)
@@ -21,4 +22,5 @@ interface AppComponent {
     fun inject(homeFragment: HomeFragment)
     fun inject(addNoteFragment: AddNoteFragment)
     fun inject(wrapperActivity: WrapperActivity)
+    fun inject(middleActivity: MiddleActivity)
 }

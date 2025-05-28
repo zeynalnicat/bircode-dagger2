@@ -11,4 +11,5 @@ interface Injection {
     fun inject(homeActivity: HomeActivity)
     fun inject(homeFragment: HomeFragment)
     fun inject(addNoteFragment: AddNoteFragment)
+    fun inject(middleActivity: MiddleActivity)
 }

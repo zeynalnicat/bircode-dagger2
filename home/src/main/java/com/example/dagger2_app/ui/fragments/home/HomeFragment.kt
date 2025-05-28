@@ -21,6 +21,7 @@ import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
 import com.example.home.databinding.FragmentHomeBinding
+import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -36,7 +37,9 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     @Inject
     lateinit var homeViewModel: HomeViewModel
 
-    private lateinit var homeNavigator: HomeNavigator
+    @Inject
+    lateinit var router: Router
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +47,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     ): View? {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         (requireActivity().application as Injection).inject(this)
-        homeNavigator = requireActivity().application as HomeNavigator
         setNavigation()
 
         return binding.root
@@ -87,23 +89,11 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     private fun setNavigation(){
         binding.fbAdd.setOnClickListener {
-//            findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
-            homeNavigator.navigateToAddNotesFragment()
+               router.navigateTo(HomeNavigator.AddNotesFragmentScreen())
         }
 
         binding.btnBack.setOnClickListener{
-//            val intent = Intent()
-//            intent.putExtra("userId", Random.nextInt(0,100))
-//            requireActivity().setResult(RESULT_OK,intent)
-//            requireActivity().finish()\
-//            homeNavigator.getRouter().setResultListener(RESULT_KEY) { data ->
-//                view.showPhoto(data as Bitmap)
-//            }
-//            router.navigateTo(SelectPhoto(RESULT_KEY))
-            (requireActivity() as HomeActivity).finish()
-
-
-
+            router.finishChain()
 
         }
     }

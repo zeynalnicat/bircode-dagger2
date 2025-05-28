@@ -22,6 +22,10 @@ class InjectionImpl(private val appComponent: AppComponent): Injection, ProfileI
         appComponent.inject(addNoteFragment)
     }
 
+    override fun inject(middleActivity: MiddleActivity) {
+        appComponent.inject(middleActivity)
+    }
+
 
     override fun inject(profileActivity: ProfileActivity) {
         appComponent.inject(profileActivity)

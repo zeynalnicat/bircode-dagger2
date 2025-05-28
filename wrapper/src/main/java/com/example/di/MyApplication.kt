@@ -11,7 +11,7 @@ import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.ui.fragments.add.AddNoteFragment
 import com.example.dagger2_app.ui.fragments.home.HomeFragment
 import com.example.profile.ProfileActivity
-import com.example.profile.ProfileNavigator
+
 import com.example.profile.data.ProfileInjection
 import com.example.profile.di.ProfileAppModule
 import com.example.profile.di.ProfileViewModelModule
@@ -22,13 +22,8 @@ import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, ProfileNavigator {
+class MyApplication: Application(), Injection, ProfileInjection {
 
-    companion object {
-        lateinit var cicerone: Cicerone<Router>
-        lateinit var router: Router
-        lateinit var navigatorHolder:NavigatorHolder
-    }
 
 
     lateinit var appComponent: AppComponent
@@ -37,9 +32,6 @@ class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, 
 
     override fun onCreate() {
         super.onCreate()
-        cicerone = Cicerone.create()
-        router = cicerone.router
-        navigatorHolder = cicerone.getNavigatorHolder()
 
         appComponent = DaggerAppComponent.builder().profileAppModule(ProfileAppModule(this)).profileViewModelModule(
             ProfileViewModelModule()).homeAppModule(HomeAppModule(this)).homeViewModelModule(
@@ -61,40 +53,15 @@ class MyApplication: Application(), Injection, ProfileInjection, HomeNavigator, 
         homeInjection.inject(addNoteFragment)
     }
 
+    override fun inject(middleActivity: MiddleActivity) {
+        homeInjection.inject(middleActivity)
+    }
+
 
     override fun inject(profileActivity: ProfileActivity) {
         profileInjection.inject(profileActivity)
     }
 
-    override fun navigateForward() {
-        router.navigateTo(Screens.HomeActivityScreen())
-    }
-
-
-    override fun injectNavigator(appNavigator: AppNavigator) {
-         navigatorHolder.setNavigator(appNavigator)
-    }
-
-    override fun navigateToAddNotesFragment() {
-         router.navigateTo(Screens.AddNotesFragmentScreen())
-    }
-
-    override fun navigateToHomeFragment() {
-         router.navigateTo(Screens.NotesFragmentScreen())
-    }
-
-
-    override fun navigateBackToActivity() {
-        router.finishChain()
-    }
-
-    override fun getRouter(): Router {
-        return router
-    }
-
-    override fun navigateBackToHomeFragment() {
-        router.backTo(Screens.NotesFragmentScreen())
-    }
 
 
 
