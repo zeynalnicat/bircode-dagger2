@@ -15,7 +15,12 @@ import javax.inject.Singleton
 @Module
 class ProfileAppModule(private val context: Context) {
 
+    @Provides
+    fun provideContext(): Context{
+        return context.applicationContext
+    }
 
+    @Singleton
     @Provides
     fun provideRoomDb(applicationContext: Context): RoomDb {
         return Room.databaseBuilder(

@@ -14,9 +14,13 @@ import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.core.di.MyApplication
 import com.example.dagger2_app.HomeActivity
 import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.Injection
+import com.example.dagger2_app.di.DaggerAppComponent
+import com.example.dagger2_app.di.HomeAppModule
+import com.example.dagger2_app.di.HomeViewModelModule
 
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
@@ -47,7 +51,11 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        (requireActivity().application as Injection).inject(this)
+        val coreComponent = (requireActivity().application as MyApplication).appComponent
+        val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
+            HomeAppModule(requireContext())).homeViewModelModule(HomeViewModelModule()).build()
+
+        appComponent.inject(this)
         setNavigation()
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,

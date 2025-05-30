@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 
 import androidx.navigation.fragment.findNavController
+import com.example.core.di.MyApplication
 import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.Injection
+import com.example.dagger2_app.di.DaggerAppComponent
+import com.example.dagger2_app.di.HomeAppModule
+import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.models.NoteDTO
 import com.example.home.R
 
@@ -35,7 +39,11 @@ class AddNoteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAddBinding.inflate(layoutInflater)
-        (requireActivity().application as Injection).inject(this)
+        val coreComponent = (requireActivity().application as MyApplication).appComponent
+        val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
+            HomeAppModule(requireContext())).homeViewModelModule(HomeViewModelModule()).build()
+
+        appComponent.inject(this)
         setNavigation()
         return binding.root
     }
@@ -51,7 +59,7 @@ class AddNoteFragment : Fragment() {
                     snackbar.setBackgroundTint(resources.getColor(R.color.green))
                     snackbar.show()
 
-                    findNavController().popBackStack()
+                    router.exit()
                     viewModel.onIntent(AddNoteIntent.OnClearState)
                 }
                 if(!it.insertion && it.error.isNotEmpty()){

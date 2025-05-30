@@ -11,7 +11,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.core.di.DaggerCoreComponent
+import com.example.core.di.MyApplication
 import com.example.dagger2_app.data.local.Injection
+import com.example.dagger2_app.di.AppComponent
+import com.example.dagger2_app.di.DaggerAppComponent
+import com.example.dagger2_app.di.HomeAppModule
+import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.home.R
 import com.example.home.databinding.ActivityMiddleBinding
 import com.github.terrakok.cicerone.Navigator
@@ -33,12 +39,18 @@ class MiddleActivity : AppCompatActivity() {
 
     private val appNavigator = AppNavigator(this,R.id.main)
 
+    private lateinit var appComponent: AppComponent
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding= ActivityMiddleBinding.inflate(layoutInflater)
-        (application as Injection).inject(this)
+
+        val coreComponent = (application as MyApplication).appComponent
+        appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
+            HomeAppModule(this)).homeViewModelModule(HomeViewModelModule()).build()
+        appComponent.inject(this)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

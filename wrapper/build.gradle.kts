@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
     id("androidx.room")
@@ -17,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.navigation"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -53,8 +54,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(project(":home"))
+    implementation(project(":core"))
     implementation(project(":profile"))
-
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.dagger)

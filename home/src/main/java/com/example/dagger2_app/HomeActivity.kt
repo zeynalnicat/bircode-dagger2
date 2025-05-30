@@ -5,7 +5,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.core.di.MyApplication
 import com.example.dagger2_app.data.local.Injection
+import com.example.dagger2_app.di.AppComponent
+import com.example.dagger2_app.di.DaggerAppComponent
+import com.example.dagger2_app.di.HomeAppModule
+import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.home.R
 import com.example.home.databinding.ActivityMainBinding
 import com.github.terrakok.cicerone.NavigatorHolder
@@ -23,12 +28,18 @@ class HomeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
+
+    lateinit var appComponent: AppComponent
     private val appNavigator = object : AppNavigator(this,R.id.fragmentContainerView){
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as Injection).inject(this)
+
+        val coreComponent = (application as MyApplication).appComponent
+        appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
+            HomeAppModule(this)).homeViewModelModule(HomeViewModelModule()).build()
+        appComponent.inject(this)
 
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
