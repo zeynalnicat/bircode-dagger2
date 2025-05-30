@@ -24,3 +24,4 @@ rootProject.name = "Dagger2-app"
 include(":home")
 include(":profile")
 include(":wrapper")
+include(":core")

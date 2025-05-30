@@ -51,6 +51,7 @@ android {
 
 dependencies {
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -69,6 +70,8 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler.v260)
 
     implementation(libs.glide)
+
+    implementation(project(":core"))
 
     implementation("com.github.terrakok:cicerone:7.1")
 

@@ -6,12 +6,17 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
+import com.example.core.di.MyApplication
 import com.example.profile.data.ProfileInjection
 import com.example.profile.databinding.ActivityProfileBinding
+import com.example.profile.di.DaggerAppComponent
+import com.example.profile.di.ProfileAppModule
+import com.example.profile.di.ProfileViewModelModule
 import com.example.profile.ui.ProfileIntent
 
 import com.example.profile.ui.ProfileViewModel
@@ -37,7 +42,11 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-       (application as ProfileInjection).inject(this)
+        val coreComponent = (application as MyApplication).appComponent
+        val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).profileAppModule(
+            ProfileAppModule(this)).profileViewModelModule(ProfileViewModelModule()).build()
+
+        appComponent.inject(this)
         enableEdgeToEdge()
         setContentView(binding.root)
 
