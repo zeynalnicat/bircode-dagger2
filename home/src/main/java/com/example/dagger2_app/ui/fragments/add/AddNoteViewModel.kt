@@ -24,16 +24,19 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
 
     fun onIntent(intent: AddNoteIntent){
         when(intent){
-            is AddNoteIntent.OnAddNote -> addNote(intent.note)
+            is AddNoteIntent.OnAddNote -> addNote()
             AddNoteIntent.OnClearState -> clearState()
             AddNoteIntent.OnNavigateBack -> router.exit()
+            is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
+            is AddNoteIntent.OnSetTitle -> _state.update { it.copy(title = intent.title) }
         }
     }
 
-    private fun addNote(noteDTO: NoteDTO){
+    private fun addNote(){
         viewModelScope.launch {
             try {
-                if(noteDao.insert(noteDTO.mapToEntity())!=-1L){
+                val note = NoteDTO(0,_state.value.title,_state.value.description)
+                if(noteDao.insert(note.mapToEntity())!=-1L){
                     _state.update { it.copy(insertion = true) }
                 }
                 else {

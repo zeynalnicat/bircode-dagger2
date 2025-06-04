@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 
 import androidx.navigation.fragment.findNavController
 import com.example.core.di.MyApplication
@@ -30,6 +32,21 @@ class AddNoteFragment : Fragment() {
     @Inject
     lateinit var viewModel: AddNoteViewModel
 
+    companion object {
+        private const val ARG_TITLE = "arg_title"
+        private const val ARG_DESCRIPTION = "arg_description"
+
+        fun newInstance(title: String, description: String): AddNoteFragment {
+            val fragment = AddNoteFragment()
+            fragment.arguments = Bundle().apply {
+                putString(ARG_TITLE, title)
+                putString(ARG_DESCRIPTION, description)
+            }
+            return fragment
+        }
+    }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +64,13 @@ class AddNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.onIntent(AddNoteIntent.OnSetTitle(arguments?.getString(ARG_TITLE) ?: ""))
+        viewModel.onIntent(AddNoteIntent.OnSetDescription(arguments?.getString(ARG_DESCRIPTION) ?: ""))
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.state.collect {
+                binding.etTitle.setText(it.title)
+                binding.etDescription.setText(it.description)
                 if(it.insertion){
                     val snackbar = Snackbar.make(requireView(),"Successfully added", Snackbar.LENGTH_SHORT)
                     snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
@@ -65,10 +86,17 @@ class AddNoteFragment : Fragment() {
             }
         }
 
+        binding.tvTitle.doAfterTextChanged {
+            viewModel.onIntent(AddNoteIntent.OnSetTitle(it.toString()))
+        }
+
+        binding.tvDescription.doAfterTextChanged {
+            viewModel.onIntent(AddNoteIntent.OnSetDescription(it.toString()))
+        }
+
 
         binding.btnSubmit.setOnClickListener {
-            val note = NoteDTO(0,binding.etTitle.text.toString(), binding.etDescription.text.toString())
-            viewModel.onIntent(AddNoteIntent.OnAddNote(note))
+            viewModel.onIntent(AddNoteIntent.OnAddNote)
         }
 
 

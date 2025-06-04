@@ -6,5 +6,5 @@ sealed class HomeIntent {
     data object OnGetDto: HomeIntent()
     data class OnRemoveNote(val note: NoteDTO): HomeIntent()
     data object OnFinishChain: HomeIntent()
-    data object OnNavigateToAddNoteFragment: HomeIntent()
+    data class OnNavigateToAddNoteFragment(val title: String="", val description:String = ""): HomeIntent()
 }

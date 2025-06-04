@@ -12,6 +12,7 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
      interface ICallback {
         fun remove(noteDTO: NoteDTO)
+        fun click(noteDTO: NoteDTO)
     }
 
     private var listener: ICallback? = null
@@ -52,6 +53,10 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
             binding.tvDescription.text = noteDTO.description
             binding.btnRemove.setOnClickListener {
                 listener?.remove(noteDTO)
+            }
+
+            itemView.setOnClickListener {
+                listener?.click(noteDTO)
             }
         }
     }

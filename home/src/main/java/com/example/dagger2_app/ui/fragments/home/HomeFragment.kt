@@ -102,7 +102,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     private fun setNavigation(){
         binding.fbAdd.setOnClickListener {
-               homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment)
+               homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment())
         }
 
         binding.btnBack.setOnClickListener{
@@ -114,6 +114,10 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     override fun remove(noteDTO: NoteDTO) {
          homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
+    }
+
+    override fun click(noteDTO: NoteDTO) {
+        homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment(noteDTO.title,noteDTO.description))
     }
 
     override fun onDetach() {
