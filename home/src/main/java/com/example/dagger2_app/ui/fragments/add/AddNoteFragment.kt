@@ -31,9 +31,6 @@ class AddNoteFragment : Fragment() {
     lateinit var viewModel: AddNoteViewModel
 
 
-    @Inject
-    lateinit var router: Router
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +56,7 @@ class AddNoteFragment : Fragment() {
                     snackbar.setBackgroundTint(resources.getColor(R.color.green))
                     snackbar.show()
 
-                    router.exit()
+                    viewModel.onIntent(AddNoteIntent.OnNavigateBack)
                     viewModel.onIntent(AddNoteIntent.OnClearState)
                 }
                 if(!it.insertion && it.error.isNotEmpty()){
@@ -80,7 +77,7 @@ class AddNoteFragment : Fragment() {
 
     private fun setNavigation(){
         binding.btnBack.setOnClickListener {
-            router.exit()
+            viewModel.onIntent(AddNoteIntent.OnNavigateBack)
         }
     }
 

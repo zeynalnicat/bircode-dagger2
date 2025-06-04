@@ -27,7 +27,6 @@ class HomeAppModule(private val context: Context) {
             applicationContext,
             RoomDb::class.java,
             "Notes Table"
-
         ).build()
     }
 

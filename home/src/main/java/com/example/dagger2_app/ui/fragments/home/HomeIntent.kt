@@ -5,4 +5,6 @@ import com.example.dagger2_app.models.NoteDTO
 sealed class HomeIntent {
     data object OnGetDto: HomeIntent()
     data class OnRemoveNote(val note: NoteDTO): HomeIntent()
+    data object OnFinishChain: HomeIntent()
+    data object OnNavigateToAddNoteFragment: HomeIntent()
 }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
@@ -42,9 +43,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     @Inject
     lateinit var homeViewModel: HomeViewModel
 
-    @Inject
-    lateinit var router: Router
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +59,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    router.finishChain()
+                    homeViewModel.onIntent(HomeIntent.OnFinishChain)
                 }
             }
         )
@@ -82,21 +80,18 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
                     snackbar.show()
                 }
 
-                if(it.notes.isNotEmpty()){
-                    binding.txtNotes.visibility = View.GONE
-                    setAdapter(it.notes)
-                }else{
-                    binding.txtNotes.visibility = View.VISIBLE
-                }
+                setAdapter(it.notes)
+
+                binding.txtNotes.isVisible = it.notes.isEmpty()
+
             }
 
         }
 
         homeViewModel.onIntent(HomeIntent.OnGetDto)
 
-
-
     }
+
 
     private fun setAdapter(notes:List<NoteDTO>){
         adapter.setList(notes)
@@ -107,13 +102,14 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     private fun setNavigation(){
         binding.fbAdd.setOnClickListener {
-               router.navigateTo(HomeNavigator.AddNotesFragmentScreen())
+               homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment)
         }
 
         binding.btnBack.setOnClickListener{
-            router.finishChain()
+            homeViewModel.onIntent(HomeIntent.OnFinishChain)
 
         }
+
     }
 
     override fun remove(noteDTO: NoteDTO) {

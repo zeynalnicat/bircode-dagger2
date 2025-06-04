@@ -8,6 +8,7 @@ import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.mapToEntity
 import com.example.dagger2_app.resource.DBResult
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddNoteViewModel @Inject constructor(val noteDao: NoteDao): ViewModel() {
+class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Router): ViewModel() {
 
     private val _state = MutableStateFlow(AddNoteState())
 
@@ -25,6 +26,7 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao): ViewModel() {
         when(intent){
             is AddNoteIntent.OnAddNote -> addNote(intent.note)
             AddNoteIntent.OnClearState -> clearState()
+            AddNoteIntent.OnNavigateBack -> router.exit()
         }
     }
 
