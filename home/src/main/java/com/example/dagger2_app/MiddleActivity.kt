@@ -58,23 +58,35 @@ class MiddleActivity : AppCompatActivity() {
             insets
         }
 
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-             if(it.resultCode == RESULT_OK){
-                 val userId = it.data?.getIntExtra("userId",-1)
-                 binding.txtUserId.text = "UserId: ${userId}"
-             }
-        }
+
+        setResultLauncher()
+        handleNavigation()
 
 
+    }
+
+    private fun handleNavigation(){
         binding.btnNext.setOnClickListener {
 
-             router.navigateTo(HomeNavigator.HomeActivityScreen())
+            router.navigateTo(HomeNavigator.HomeActivityScreen())
         }
 
         binding.imgBack.setOnClickListener {
-              onBackPressedDispatcher.onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
+
+
+    private fun setResultLauncher(){
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                val userId = it.data?.getIntExtra("userId",-1)
+                binding.txtUserId.text = "UserId: ${userId}"
+            }
+        }
+
+    }
+
 
     override fun onResumeFragments() {
         super.onResumeFragments()

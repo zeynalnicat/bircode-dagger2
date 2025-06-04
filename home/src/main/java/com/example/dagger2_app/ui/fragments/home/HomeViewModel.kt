@@ -4,6 +4,7 @@ import android.content.res.TypedArray
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.extensions.launch
 import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
@@ -47,27 +48,25 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
 
     private fun getNotes() {
 
-        viewModelScope.launch {
-
-            try {
+        launch(
+            onError = {e-> _state.update { it.copy(error = e.message ?: "Unknown Error") }},
+            onSuccess = {
                 val noteResult = noteDao.getNotes()
-                _state.update { it.copy(notes = noteResult.map { it.map() }) }
-            } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Unknown error") }
-            }
-        }
+                _state.update { it.copy(notes = noteResult.map { it.map() }) }}
+        )
+
     }
 
     private fun removeNote(note: NoteDTO) {
-        viewModelScope.launch {
-            try {
-                noteDao.remove(note.mapToEntity())
-                getNotes()
-            } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Unknown error") }
-            } finally {
 
-            }
-        }
+        launch(
+            onError = { e-> _state.update { it.copy(error = e.message ?: "Unknown error") }},
+            onSuccess = {
+                noteDao.remove(note.mapToEntity())
+                val modifiedList = _state.value.notes.toMutableList()
+                modifiedList.remove(note)
+                _state.update { it.copy(notes = modifiedList.toList()) }
+                }
+        )
     }
 }

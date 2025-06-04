@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.mapToEntity
@@ -33,19 +34,18 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
     }
 
     private fun addNote(){
-        viewModelScope.launch {
-            try {
+
+        launch(
+            onError = { e-> _state.update{it.copy(error = e.message ?: "Couldn't insert")}},
+            onSuccess = {
                 val note = NoteDTO(0,_state.value.title,_state.value.description)
                 if(noteDao.insert(note.mapToEntity())!=-1L){
                     _state.update { it.copy(insertion = true) }
                 }
                 else {
                     _state.update { it.copy(error = "Couldn't insert") }
-                }
-            }catch (e:Exception){
-                _state.update{it.copy(error = e.message ?: "Couldn't insert")}
-            }
-        }
+                }}
+        )
     }
 
     private fun clearState(){

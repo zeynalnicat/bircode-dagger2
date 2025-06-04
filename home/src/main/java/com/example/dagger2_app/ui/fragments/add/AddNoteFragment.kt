@@ -1,6 +1,7 @@
 package com.example.dagger2_app.ui.fragments.add
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -64,9 +65,42 @@ class AddNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupEditTextValues()
+        handleStateListener()
+
+        editTextListener()
+        handleSubmit()
+
+
+
+
+
+    }
+
+    private fun setupEditTextValues(){
         viewModel.onIntent(AddNoteIntent.OnSetTitle(arguments?.getString(ARG_TITLE) ?: ""))
         viewModel.onIntent(AddNoteIntent.OnSetDescription(arguments?.getString(ARG_DESCRIPTION) ?: ""))
+    }
 
+    private fun editTextListener(){
+        binding.etTitle.doAfterTextChanged {
+            viewModel.onIntent(AddNoteIntent.OnSetTitle(it.toString()))
+        }
+
+        binding.etDescription.doAfterTextChanged {
+            viewModel.onIntent(AddNoteIntent.OnSetDescription(it.toString()))
+        }
+
+    }
+
+    private fun handleSubmit(){
+        binding.btnSubmit.setOnClickListener {
+            viewModel.onIntent(AddNoteIntent.OnAddNote)
+        }
+    }
+
+
+    private fun handleStateListener(){
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.state.collect {
                 binding.etTitle.setText(it.title)
@@ -85,22 +119,6 @@ class AddNoteFragment : Fragment() {
                 }
             }
         }
-
-        binding.tvTitle.doAfterTextChanged {
-            viewModel.onIntent(AddNoteIntent.OnSetTitle(it.toString()))
-        }
-
-        binding.tvDescription.doAfterTextChanged {
-            viewModel.onIntent(AddNoteIntent.OnSetDescription(it.toString()))
-        }
-
-
-        binding.btnSubmit.setOnClickListener {
-            viewModel.onIntent(AddNoteIntent.OnAddNote)
-        }
-
-
-
     }
 
     private fun setNavigation(){

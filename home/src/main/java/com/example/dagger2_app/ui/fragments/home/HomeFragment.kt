@@ -1,7 +1,5 @@
 package com.example.dagger2_app.ui.fragments.home
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,12 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.core.di.MyApplication
-import com.example.dagger2_app.HomeActivity
-import com.example.dagger2_app.HomeNavigator
-import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
@@ -27,12 +21,10 @@ import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
 import com.example.home.databinding.FragmentHomeBinding
-import com.github.terrakok.cicerone.Router
-import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
+
 
 class HomeFragment : Fragment(), NotesAdapter.ICallback {
     private lateinit var binding: FragmentHomeBinding
@@ -54,7 +46,14 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
             HomeAppModule(requireContext())).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
-        setNavigation()
+
+
+
+        return binding.root
+    }
+
+
+    private fun setupOnBackPress(){
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -63,14 +62,26 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
                 }
             }
         )
-
-        return binding.root
     }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setNavigation()
+        setupOnBackPress()
+        handleStateListener()
+        handleOnFetchNotes()
 
+
+    }
+
+
+    private fun handleOnFetchNotes(){
+        homeViewModel.onIntent(HomeIntent.OnGetDto)
+    }
+
+    private fun handleStateListener(){
         lifecycleScope.launch {
             homeViewModel.state.collect {
                 if(it.error.isNotEmpty()){
@@ -87,9 +98,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
             }
 
         }
-
-        homeViewModel.onIntent(HomeIntent.OnGetDto)
-
     }
 
 
@@ -118,16 +126,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
     override fun click(noteDTO: NoteDTO) {
         homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment(noteDTO.title,noteDTO.description))
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.e("fragment","detached")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("fragment","destroyed")
     }
 
 

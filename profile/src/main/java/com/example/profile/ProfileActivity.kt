@@ -50,7 +50,51 @@ class ProfileActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        handleStateListener()
+        handleNavigation()
+        handleOnSave()
+        handleOnFetchState()
+        handleOnSelectImage()
 
+
+
+
+
+
+    }
+
+    private fun handleOnSelectImage(){
+
+        binding.profileImageContainer.setOnClickListener {
+            selectImageLauncher.launch("image/*")
+        }
+
+    }
+
+    private fun handleOnFetchState(){
+        viewModel.getName()
+        viewModel.getImgUri()
+
+    }
+
+    private fun handleNavigation(){
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+    }
+
+    private fun handleOnSave(){
+
+        binding.saveButton.setOnClickListener {
+            viewModel.onIntent(ProfileIntent.OnChangeName(binding.editName.text.toString()))
+
+        }
+
+    }
+
+
+    private fun handleStateListener(){
         lifecycleScope.launch {
             viewModel.state.collect { state->
                 if(state.insertion){
@@ -77,27 +121,8 @@ class ProfileActivity : AppCompatActivity() {
 
 
         }
-
-        binding.btnBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-
-        binding.profileImageContainer.setOnClickListener {
-            selectImageLauncher.launch("image/*")
-        }
-
-
-
-        binding.saveButton.setOnClickListener {
-            viewModel.onIntent(ProfileIntent.OnChangeName(binding.editName.text.toString()))
-
-        }
-
-        viewModel.getName()
-        viewModel.getImgUri()
-
-
     }
+
 
 
 }
