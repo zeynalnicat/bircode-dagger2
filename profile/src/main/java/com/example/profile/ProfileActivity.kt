@@ -57,10 +57,6 @@ class ProfileActivity : AppCompatActivity() {
         handleOnSelectImage()
 
 
-
-
-
-
     }
 
     private fun handleOnSelectImage(){

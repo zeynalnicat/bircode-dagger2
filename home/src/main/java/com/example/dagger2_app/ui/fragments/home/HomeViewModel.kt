@@ -37,6 +37,9 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
 
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
+    private val _effect = MutableSharedFlow<HomeUiEffect>()
+    val effect = _effect.asSharedFlow()
+
     fun onIntent(intent: HomeIntent) {
         when (intent) {
             HomeIntent.OnGetDto -> getNotes()
@@ -49,7 +52,8 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     private fun getNotes() {
 
         launch(
-            onError = {e-> _state.update { it.copy(error = e.message ?: "Unknown Error") }},
+            onError = {e-> _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))
+                },
             onSuccess = {
                 val noteResult = noteDao.getNotes()
                 _state.update { it.copy(notes = noteResult.map { it.map() }) }}
@@ -60,7 +64,8 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     private fun removeNote(note: NoteDTO) {
 
         launch(
-            onError = { e-> _state.update { it.copy(error = e.message ?: "Unknown error") }},
+            onError = {
+                e-> _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))},
             onSuccess = {
                 noteDao.remove(note.mapToEntity())
                 val modifiedList = _state.value.notes.toMutableList()

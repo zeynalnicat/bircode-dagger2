@@ -1,17 +1,17 @@
 package com.example.dagger2_app.ui.fragments.add
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.mapToEntity
-import com.example.dagger2_app.resource.DBResult
 import com.github.terrakok.cicerone.Router
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,10 +23,13 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
 
     val state: StateFlow<AddNoteState> = _state.asStateFlow()
 
+
+    private val _effect = MutableSharedFlow<AddNoteUiEffect>()
+    val effect = _effect.asSharedFlow()
+
     fun onIntent(intent: AddNoteIntent){
         when(intent){
             is AddNoteIntent.OnAddNote -> addNote()
-            AddNoteIntent.OnClearState -> clearState()
             AddNoteIntent.OnNavigateBack -> router.exit()
             is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
             is AddNoteIntent.OnSetTitle -> _state.update { it.copy(title = intent.title) }
@@ -36,19 +39,17 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
     private fun addNote(){
 
         launch(
-            onError = { e-> _state.update{it.copy(error = e.message ?: "Couldn't insert")}},
+            onError = { e-> _effect.emit( AddNoteUiEffect.ShowSnackbar(e.message ?: "Couldn't insert") ) },
             onSuccess = {
                 val note = NoteDTO(0,_state.value.title,_state.value.description)
                 if(noteDao.insert(note.mapToEntity())!=-1L){
-                    _state.update { it.copy(insertion = true) }
+                    _effect.emit ( AddNoteUiEffect.NotifyInsertion )
                 }
                 else {
-                    _state.update { it.copy(error = "Couldn't insert") }
+                    _effect.emit ( AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+
                 }}
         )
     }
 
-    private fun clearState(){
-        _state.update { it.copy(false,"") }
-    }
 }

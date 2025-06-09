@@ -84,19 +84,24 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     private fun handleStateListener(){
         lifecycleScope.launch {
             homeViewModel.state.collect {
-                if(it.error.isNotEmpty()){
-                    val snackbar = Snackbar.make(requireView(),it.error,Snackbar.LENGTH_SHORT)
-                    snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
-                    snackbar.setBackgroundTint(resources.getColor(R.color.red))
-                    snackbar.show()
-                }
-
                 setAdapter(it.notes)
-
                 binding.txtNotes.isVisible = it.notes.isEmpty()
 
             }
 
+        }
+
+        lifecycleScope.launch {
+            homeViewModel.effect.collect { effect->
+                 when(effect){
+                     is HomeUiEffect.ShowSnackbar -> {
+                         val snackbar = Snackbar.make(requireView(),effect.message,Snackbar.LENGTH_SHORT)
+                         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
+                         snackbar.setBackgroundTint(resources.getColor(R.color.red))
+                         snackbar.show()
+                     }
+                 }
+            }
         }
     }
 

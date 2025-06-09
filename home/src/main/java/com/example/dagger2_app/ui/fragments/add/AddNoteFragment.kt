@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
 import com.example.core.di.MyApplication
+import com.example.core.extensions.setTextIfChanged
 import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.DaggerAppComponent
@@ -72,9 +74,6 @@ class AddNoteFragment : Fragment() {
         handleSubmit()
 
 
-
-
-
     }
 
     private fun setupEditTextValues(){
@@ -84,11 +83,13 @@ class AddNoteFragment : Fragment() {
 
     private fun editTextListener(){
         binding.etTitle.doAfterTextChanged {
-            viewModel.onIntent(AddNoteIntent.OnSetTitle(it.toString()))
+            val title = it?.toString().orEmpty()
+            viewModel.onIntent(AddNoteIntent.OnSetTitle(title))
         }
 
         binding.etDescription.doAfterTextChanged {
-            viewModel.onIntent(AddNoteIntent.OnSetDescription(it.toString()))
+            val desc = it?.toString().orEmpty()
+            viewModel.onIntent(AddNoteIntent.OnSetDescription(desc))
         }
 
     }
@@ -101,21 +102,26 @@ class AddNoteFragment : Fragment() {
 
 
     private fun handleStateListener(){
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             viewModel.state.collect {
-                binding.etTitle.setText(it.title)
-                binding.etDescription.setText(it.description)
-                if(it.insertion){
-                    val snackbar = Snackbar.make(requireView(),"Successfully added", Snackbar.LENGTH_SHORT)
-                    snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-                    snackbar.setBackgroundTint(resources.getColor(R.color.green))
-                    snackbar.show()
+                binding.etTitle.setTextIfChanged(it.title)
+                binding.etDescription.setTextIfChanged(it.description)
+            }
+        }
 
-                    viewModel.onIntent(AddNoteIntent.OnNavigateBack)
-                    viewModel.onIntent(AddNoteIntent.OnClearState)
-                }
-                if(!it.insertion && it.error.isNotEmpty()){
-                    Snackbar.make(requireView(),it.error, Snackbar.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            viewModel.effect.collect {effect->
+                when(effect){
+                    AddNoteUiEffect.NotifyInsertion -> {
+                        val snackbar = Snackbar.make(requireView(),"Successfully added", Snackbar.LENGTH_SHORT)
+                        snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+                        snackbar.setBackgroundTint(resources.getColor(R.color.green))
+                        snackbar.show()
+
+                        viewModel.onIntent(AddNoteIntent.OnNavigateBack)}
+                    is AddNoteUiEffect.ShowSnackbar ->{
+                        Snackbar.make(requireView(),effect.message, Snackbar.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
