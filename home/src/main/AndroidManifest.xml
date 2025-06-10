@@ -15,10 +15,20 @@
         <activity
             android:name="com.example.dagger2_app.HomeActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity
+            android:name="com.example.dagger2_app.MiddleActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:host="middle"
+                      android:scheme="app"
+                    android:pathPrefix="/page"/>
+
             </intent-filter>
         </activity>
     </application>

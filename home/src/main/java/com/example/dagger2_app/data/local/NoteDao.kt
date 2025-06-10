@@ -1,6 +1,7 @@
 package com.example.dagger2_app.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -11,8 +12,11 @@ import com.example.dagger2_app.models.NoteEntity
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(noteEntity: NoteEntity):Long
+    suspend fun insert(noteEntity: NoteEntity): Long
 
     @Query("Select * from notes")
-    suspend fun getNotes():List<NoteEntity>
+    suspend fun getNotes(): List<NoteEntity>
+
+    @Delete
+    suspend fun remove(note: NoteEntity)
 }

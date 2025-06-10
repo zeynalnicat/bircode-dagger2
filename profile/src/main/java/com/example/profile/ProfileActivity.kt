@@ -6,72 +6,123 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
-import com.example.profile.data.ProfileInjection
+import com.example.core.di.MyApplication
 import com.example.profile.databinding.ActivityProfileBinding
+import com.example.profile.di.DaggerAppComponent
+import com.example.profile.di.ProfileAppModule
+import com.example.profile.di.ProfileViewModelModule
+import com.example.profile.ui.ProfileIntent
 
 import com.example.profile.ui.ProfileViewModel
+import com.github.terrakok.cicerone.androidx.AppNavigator
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ProfileViewModel
-    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            viewModel.addImgUri(it.toString())
-            binding.profileImageView.setImageURI(it)
+    private val selectImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                viewModel.onIntent(ProfileIntent.OnChangeProfileUri(it.toString()))
+                binding.profileImageView.setImageURI(it)
+            }
         }
-    }
+
 
     private lateinit var binding: ActivityProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-       (application as ProfileInjection).inject(this)
+        val coreComponent = (application as MyApplication).appComponent
+        val appComponent =
+            DaggerAppComponent.builder().coreComponent(coreComponent).profileAppModule(
+                ProfileAppModule(this)
+            ).profileViewModelModule(ProfileViewModelModule()).build()
+
+        appComponent.inject(this)
         enableEdgeToEdge()
         setContentView(binding.root)
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.m)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
 
-        binding.btnBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        handleStateListener()
+        handleNavigation()
+        handleOnSave()
+        handleOnFetchState()
+        handleOnSelectImage()
+
+
+    }
+
+    private fun handleOnSelectImage() {
 
         binding.profileImageContainer.setOnClickListener {
             selectImageLauncher.launch("image/*")
         }
 
-        viewModel.imgUri.observe(this){
-            if(it.isEmpty()) binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
-            else{
-                Glide.with(this)
-                    .load(it)
-                    .into(binding.profileImageView)
-            }
-        }
+    }
 
-        viewModel.name.observe(this){
-            if(it.isNotEmpty()){
-                binding.editName.setText(it)
-            }
-
-        }
-
-        binding.saveButton.setOnClickListener {
-            viewModel.addName(binding.editName.text.toString())
-
-        }
-
+    private fun handleOnFetchState() {
         viewModel.getName()
         viewModel.getImgUri()
 
+    }
 
+    private fun handleNavigation() {
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+    }
+
+    private fun handleOnSave() {
+
+        binding.saveButton.setOnClickListener {
+            viewModel.onIntent(ProfileIntent.OnChangeName(binding.editName.text.toString()))
+
+        }
+
+    }
+
+
+    private fun handleStateListener() {
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                if (state.insertion) {
+                    val snackbar =
+                        Snackbar.make(binding.root, "Successfully changed", Snackbar.LENGTH_SHORT)
+                    snackbar.view.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@ProfileActivity,
+                            R.color.green
+                        )
+                    )
+                    snackbar.setBackgroundTint(resources.getColor(R.color.green))
+                    snackbar.show()
+                }
+
+                if (state.profileUri.isEmpty()) {
+                    binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
+                } else {
+                    Glide.with(this@ProfileActivity)
+                        .load(state.profileUri)
+                        .into(binding.profileImageView)
+                }
+
+                if (state.username.isNotEmpty()) {
+                    binding.editName.setText(state.username)
+                }
+
+            }
+
+
+        }
     }
 
 

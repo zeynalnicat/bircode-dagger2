@@ -1,19 +1,14 @@
-package com.example.data.local
+package com.example.profile.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.dagger2_app.data.local.NoteDao
-import com.example.dagger2_app.models.NoteEntity
 import com.example.profile.data.local.ProfileDao
 import com.example.profile.models.ProfileEntity
 
-
-@Database(entities = [ProfileEntity::class, NoteEntity::class], version = 2)
+@Database(entities = [ProfileEntity::class], version = 3)
 abstract class RoomDb: RoomDatabase() {
 
-
     abstract fun profileDao(): ProfileDao
-    abstract fun noteDao(): NoteDao
 
 
 }

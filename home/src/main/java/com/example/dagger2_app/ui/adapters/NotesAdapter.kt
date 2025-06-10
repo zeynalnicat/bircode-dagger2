@@ -8,7 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dagger2_app.models.NoteDTO
 import com.example.home.databinding.ItemNotesLayoutBinding
 
-class NotesAdapter:RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+
+    interface ICallback {
+        fun remove(noteDTO: NoteDTO)
+        fun click(noteDTO: NoteDTO)
+    }
+
+    private var listener: ICallback? = null
+
 
     private val diffCallBack = object : DiffUtil.ItemCallback<NoteDTO>() {
         override fun areItemsTheSame(oldItem: NoteDTO, newItem: NoteDTO): Boolean {
@@ -25,7 +33,8 @@ class NotesAdapter:RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = ItemNotesLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val view =
+            ItemNotesLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view)
     }
 
@@ -37,14 +46,26 @@ class NotesAdapter:RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
         return holder.bind(diffUtil.currentList[position])
     }
 
-    inner class ViewHolder(private val binding:ItemNotesLayoutBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(noteDTO: NoteDTO){
-            binding.tvTitle.text =  noteDTO.title
+    inner class ViewHolder(private val binding: ItemNotesLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(noteDTO: NoteDTO) {
+            binding.tvTitle.text = noteDTO.title
             binding.tvDescription.text = noteDTO.description
+            binding.btnRemove.setOnClickListener {
+                listener?.remove(noteDTO)
+            }
+
+            itemView.setOnClickListener {
+                listener?.click(noteDTO)
+            }
         }
     }
 
-    fun setList(noteList:List<NoteDTO>){
+    fun setList(noteList: List<NoteDTO>) {
         diffUtil.submitList(noteList)
+    }
+
+    fun setCallBack(callBack: ICallback) {
+        listener = callBack
     }
 }

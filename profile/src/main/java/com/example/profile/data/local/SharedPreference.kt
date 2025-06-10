@@ -18,7 +18,7 @@ class SharedPreferenceHelper(context: Context) {
     }
 
     fun putBoolean(key: String, value: Boolean) {
-        prefs.edit{ putBoolean(key, value) }
+        prefs.edit { putBoolean(key, value) }
     }
 
     fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
@@ -26,7 +26,7 @@ class SharedPreferenceHelper(context: Context) {
     }
 
     fun clear() {
-        prefs.edit{ clear()}
+        prefs.edit { clear() }
     }
 
     companion object {

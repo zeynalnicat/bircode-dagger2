@@ -65,4 +65,8 @@ dependencies {
 
     implementation (libs.androidx.recyclerview)
     implementation (libs.androidx.recyclerview.selection)
+
+    implementation(libs.cicerone)
+
+    implementation(project(":core"))
 }

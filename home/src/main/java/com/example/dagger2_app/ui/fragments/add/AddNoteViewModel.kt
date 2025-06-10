@@ -1,33 +1,61 @@
 package com.example.dagger2_app.ui.fragments.add
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.mapToEntity
-import com.example.dagger2_app.resource.DBResult
+import com.github.terrakok.cicerone.Router
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddNoteViewModel @Inject constructor(val noteDao: NoteDao): ViewModel() {
+class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Router) : ViewModel() {
 
-    private val _insertion = MutableLiveData<DBResult<Unit>>()
+    private val _state = MutableStateFlow(AddNoteState())
 
-    val insertion : LiveData<DBResult<Unit>> get() = _insertion
-    fun addNote(noteDTO: NoteDTO){
-        viewModelScope.launch {
-            try {
-                if(noteDao.insert(noteDTO.mapToEntity())!=-1L){
-                   _insertion.value = DBResult.Success(Unit)
-                }
-                else {
-                    _insertion.value = DBResult.Error("Couldn't insert")
-                }
-            }catch (e:Exception){
-                _insertion.value = DBResult.Error(e.message ?: "Couldn't insert")
-            }
+    val state: StateFlow<AddNoteState> = _state.asStateFlow()
+
+
+    private val _effect = MutableSharedFlow<AddNoteUiEffect>()
+    val effect = _effect.asSharedFlow()
+
+    fun onIntent(intent: AddNoteIntent) {
+        when (intent) {
+            is AddNoteIntent.OnAddNote -> addNote()
+            AddNoteIntent.OnNavigateBack -> router.exit()
+            is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
+            is AddNoteIntent.OnSetTitle -> _state.update { it.copy(title = intent.title) }
         }
     }
+
+    private fun addNote() {
+
+        launch(
+            onError = { e ->
+                _effect.emit(
+                    AddNoteUiEffect.ShowSnackbar(
+                        e.message ?: "Couldn't insert"
+                    )
+                )
+            },
+            onSuccess = {
+                val note = NoteDTO(0, _state.value.title, _state.value.description)
+                if (noteDao.insert(note.mapToEntity()) != -1L) {
+                    _effect.emit(AddNoteUiEffect.NotifyInsertion)
+                } else {
+                    _effect.emit(AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+
+                }
+            }
+        )
+    }
+
 }
