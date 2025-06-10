@@ -37,6 +37,7 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
     }
 
     private fun addNote() {
+        var insertion = -1L
 
         launch(
             onError = { e ->
@@ -46,12 +47,17 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
                     )
                 )
             },
-            onSuccess = {
+            onCallMethod = {
                 val note = NoteDTO(0, _state.value.title, _state.value.description)
-                if (noteDao.insert(note.mapToEntity()) != -1L) {
-                    _effect.emit(AddNoteUiEffect.NotifyInsertion)
+                insertion = noteDao.insert(note.mapToEntity())
+            },
+            onSuccess = {
+                if (insertion!=-1L) {
+                   _effect.emit(AddNoteUiEffect.NotifyInsertion)
+
                 } else {
-                    _effect.emit(AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+                     _effect.emit(AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+
 
                 }
             }
