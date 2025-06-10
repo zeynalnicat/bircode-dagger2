@@ -16,7 +16,6 @@ class WrapperActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWrapperBinding
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,8 +24,8 @@ class WrapperActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnNote.setOnClickListener {
-              val intent = Intent(Intent.ACTION_VIEW, "app://middle/page".toUri())
-              startActivity(intent)
+            val intent = Intent(Intent.ACTION_VIEW, "app://middle/page".toUri())
+            startActivity(intent)
         }
 
         binding.btnProfile.setOnClickListener {

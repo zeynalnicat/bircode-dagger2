@@ -9,7 +9,10 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [HomeAppModule::class, HomeViewModelModule::class], dependencies = [CoreComponent::class])
+@Component(
+    modules = [HomeAppModule::class, HomeViewModelModule::class],
+    dependencies = [CoreComponent::class]
+)
 interface AppComponent {
 
     fun inject(homeActivity: HomeActivity)

@@ -6,7 +6,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-fun ViewModel.launch(onError: suspend (e: Exception)->Unit, onSuccess: suspend ()->Unit, onFinally:()->Unit={}){
+fun ViewModel.launch(
+    onError: suspend (e: Exception) -> Unit,
+    onSuccess: suspend () -> Unit,
+    onFinally: () -> Unit = {}
+) {
     CoroutineScope(Dispatchers.IO).launch {
         try {
             onSuccess()

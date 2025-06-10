@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class ProfileAppModule(private val context: Context) {
 
     @Provides
-    fun provideContext(): Context{
+    fun provideContext(): Context {
         return context.applicationContext
     }
 
@@ -31,19 +31,12 @@ class ProfileAppModule(private val context: Context) {
         ).build()
     }
 
-    @Singleton
-    @Provides
-    fun provideProfileDao(roomDb: RoomDb): ProfileDao{
-        return roomDb.profileDao()
-    }
 
     @Singleton
     @Provides
-    fun provideSharedPref(context: Context): SharedPreferenceHelper{
+    fun provideSharedPref(context: Context): SharedPreferenceHelper {
         return SharedPreferenceHelper(context)
     }
-
-
 
 
 }

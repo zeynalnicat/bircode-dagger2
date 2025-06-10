@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.core.di.MyApplication
-import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.AppComponent
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
@@ -30,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
     lateinit var navigatorHolder: NavigatorHolder
 
     lateinit var appComponent: AppComponent
-    private val appNavigator = object : AppNavigator(this,R.id.fragmentContainerView){
+    private val appNavigator = object : AppNavigator(this, R.id.fragmentContainerView) {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +37,8 @@ class HomeActivity : AppCompatActivity() {
 
         val coreComponent = (application as MyApplication).appComponent
         appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
-            HomeAppModule(this)).homeViewModelModule(HomeViewModelModule()).build()
+            HomeAppModule(this)
+        ).homeViewModelModule(HomeViewModelModule()).build()
         appComponent.inject(this)
 
         enableEdgeToEdge()
@@ -51,7 +51,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
 
-        if(savedInstanceState==null){
+        if (savedInstanceState == null) {
             router.navigateTo(HomeNavigator.NotesFragmentScreen())
         }
 
@@ -66,12 +66,6 @@ class HomeActivity : AppCompatActivity() {
         super.onPause()
         navigatorHolder.removeNavigator()
     }
-
-
-
-
-
-
 
 
 }

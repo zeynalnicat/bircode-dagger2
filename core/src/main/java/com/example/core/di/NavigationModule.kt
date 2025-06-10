@@ -15,8 +15,8 @@ class NavigationModule {
 
 
     @Provides
-    fun providerRouter(): Router{
-         return cicerone.router
+    fun providerRouter(): Router {
+        return cicerone.router
     }
 
     @Provides

@@ -9,11 +9,12 @@ import com.github.terrakok.cicerone.androidx.ActivityScreen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 object HomeNavigator {
-    fun HomeActivityScreen() = ActivityScreen{ Intent(it, HomeActivity::class.java) }
-    fun NotesFragmentScreen() = FragmentScreen{ HomeFragment() }
-    fun AddNotesFragmentScreen(title:String, description:String) = object : FragmentScreen {
+    fun HomeActivityScreen() = ActivityScreen { Intent(it, HomeActivity::class.java) }
+    fun NotesFragmentScreen() = FragmentScreen { HomeFragment() }
+    fun AddNotesFragmentScreen(title: String, description: String) = object : FragmentScreen {
         override fun createFragment(factory: FragmentFactory): Fragment {
-            return AddNoteFragment.newInstance(title,description)
-        }}
+            return AddNoteFragment.newInstance(title, description)
+        }
+    }
 
 }

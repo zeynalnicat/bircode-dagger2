@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Router): ViewModel() {
+class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Router) : ViewModel() {
 
     private val _state = MutableStateFlow(AddNoteState())
 
@@ -27,8 +27,8 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
     private val _effect = MutableSharedFlow<AddNoteUiEffect>()
     val effect = _effect.asSharedFlow()
 
-    fun onIntent(intent: AddNoteIntent){
-        when(intent){
+    fun onIntent(intent: AddNoteIntent) {
+        when (intent) {
             is AddNoteIntent.OnAddNote -> addNote()
             AddNoteIntent.OnNavigateBack -> router.exit()
             is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
@@ -36,19 +36,25 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
         }
     }
 
-    private fun addNote(){
+    private fun addNote() {
 
         launch(
-            onError = { e-> _effect.emit( AddNoteUiEffect.ShowSnackbar(e.message ?: "Couldn't insert") ) },
+            onError = { e ->
+                _effect.emit(
+                    AddNoteUiEffect.ShowSnackbar(
+                        e.message ?: "Couldn't insert"
+                    )
+                )
+            },
             onSuccess = {
-                val note = NoteDTO(0,_state.value.title,_state.value.description)
-                if(noteDao.insert(note.mapToEntity())!=-1L){
-                    _effect.emit ( AddNoteUiEffect.NotifyInsertion )
-                }
-                else {
-                    _effect.emit ( AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+                val note = NoteDTO(0, _state.value.title, _state.value.description)
+                if (noteDao.insert(note.mapToEntity()) != -1L) {
+                    _effect.emit(AddNoteUiEffect.NotifyInsertion)
+                } else {
+                    _effect.emit(AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
 
-                }}
+                }
+            }
         )
     }
 

@@ -11,21 +11,16 @@ import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.mapToEntity
 import com.example.dagger2_app.utils.extension.map
 import com.github.terrakok.cicerone.Router
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
-import java.io.FileInputStream
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private val router: Router) : ViewModel() {
+class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private val router: Router) :
+    ViewModel() {
 
 //    flows channel state shared cold hot  shared inner params
     //  tryEmit , emit
@@ -45,18 +40,25 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             HomeIntent.OnGetDto -> getNotes()
             is HomeIntent.OnRemoveNote -> removeNote(intent.note)
             HomeIntent.OnFinishChain -> router.finishChain()
-            is HomeIntent.OnNavigateToAddNoteFragment -> router.navigateTo(HomeNavigator.AddNotesFragmentScreen(intent.title,intent.description))
+            is HomeIntent.OnNavigateToAddNoteFragment -> router.navigateTo(
+                HomeNavigator.AddNotesFragmentScreen(
+                    intent.title,
+                    intent.description
+                )
+            )
         }
     }
 
     private fun getNotes() {
 
         launch(
-            onError = {e-> _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))
-                },
+            onError = { e ->
+                _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))
+            },
             onSuccess = {
                 val noteResult = noteDao.getNotes()
-                _state.update { it.copy(notes = noteResult.map { it.map() }) }}
+                _state.update { it.copy(notes = noteResult.map { it.map() }) }
+            }
         )
 
     }
@@ -64,14 +66,19 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     private fun removeNote(note: NoteDTO) {
 
         launch(
-            onError = {
-                e-> _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))},
+            onError = { e ->
+                _effect.emit(
+                    HomeUiEffect.ShowSnackbar(
+                        e.message ?: "Unknown Error"
+                    )
+                )
+            },
             onSuccess = {
                 noteDao.remove(note.mapToEntity())
                 val modifiedList = _state.value.notes.toMutableList()
                 modifiedList.remove(note)
                 _state.update { it.copy(notes = modifiedList.toList()) }
-                }
+            }
         )
     }
 }

@@ -31,7 +31,8 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 
 
     @Inject
-    lateinit var adapter : NotesAdapter
+    lateinit var adapter: NotesAdapter
+
     @Inject
     lateinit var homeViewModel: HomeViewModel
 
@@ -43,7 +44,8 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         val coreComponent = (requireActivity().application as MyApplication).appComponent
         val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
-            HomeAppModule(requireContext())).homeViewModelModule(HomeViewModelModule()).build()
+            HomeAppModule(requireContext())
+        ).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
 
@@ -53,7 +55,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     }
 
 
-    private fun setupOnBackPress(){
+    private fun setupOnBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -63,7 +65,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
             }
         )
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,11 +78,11 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     }
 
 
-    private fun handleOnFetchNotes(){
+    private fun handleOnFetchNotes() {
         homeViewModel.onIntent(HomeIntent.OnGetDto)
     }
 
-    private fun handleStateListener(){
+    private fun handleStateListener() {
         lifecycleScope.launch {
             homeViewModel.state.collect {
                 setAdapter(it.notes)
@@ -92,33 +93,39 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         }
 
         lifecycleScope.launch {
-            homeViewModel.effect.collect { effect->
-                 when(effect){
-                     is HomeUiEffect.ShowSnackbar -> {
-                         val snackbar = Snackbar.make(requireView(),effect.message,Snackbar.LENGTH_SHORT)
-                         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
-                         snackbar.setBackgroundTint(resources.getColor(R.color.red))
-                         snackbar.show()
-                     }
-                 }
+            homeViewModel.effect.collect { effect ->
+                when (effect) {
+                    is HomeUiEffect.ShowSnackbar -> {
+                        val snackbar =
+                            Snackbar.make(requireView(), effect.message, Snackbar.LENGTH_SHORT)
+                        snackbar.view.setBackgroundColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.red
+                            )
+                        )
+                        snackbar.setBackgroundTint(resources.getColor(R.color.red))
+                        snackbar.show()
+                    }
+                }
             }
         }
     }
 
 
-    private fun setAdapter(notes:List<NoteDTO>){
+    private fun setAdapter(notes: List<NoteDTO>) {
         adapter.setList(notes)
         adapter.setCallBack(this)
-        binding.rvNotes.layoutManager = GridLayoutManager(requireContext(),1)
+        binding.rvNotes.layoutManager = GridLayoutManager(requireContext(), 1)
         binding.rvNotes.adapter = adapter
     }
 
-    private fun setNavigation(){
+    private fun setNavigation() {
         binding.fbAdd.setOnClickListener {
-               homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment())
+            homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment())
         }
 
-        binding.btnBack.setOnClickListener{
+        binding.btnBack.setOnClickListener {
             homeViewModel.onIntent(HomeIntent.OnFinishChain)
 
         }
@@ -126,13 +133,17 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     }
 
     override fun remove(noteDTO: NoteDTO) {
-         homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
+        homeViewModel.onIntent(HomeIntent.OnRemoveNote(noteDTO))
     }
 
     override fun click(noteDTO: NoteDTO) {
-        homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment(noteDTO.title,noteDTO.description))
+        homeViewModel.onIntent(
+            HomeIntent.OnNavigateToAddNoteFragment(
+                noteDTO.title,
+                noteDTO.description
+            )
+        )
     }
-
 
 
 }

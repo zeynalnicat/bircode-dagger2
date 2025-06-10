@@ -10,7 +10,7 @@ import com.example.home.databinding.ItemNotesLayoutBinding
 
 class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
-     interface ICallback {
+    interface ICallback {
         fun remove(noteDTO: NoteDTO)
         fun click(noteDTO: NoteDTO)
     }
@@ -65,7 +65,7 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
         diffUtil.submitList(noteList)
     }
 
-    fun setCallBack(callBack: ICallback){
+    fun setCallBack(callBack: ICallback) {
         listener = callBack
     }
 }

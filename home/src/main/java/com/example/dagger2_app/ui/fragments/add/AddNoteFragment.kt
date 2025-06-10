@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.core.di.MyApplication
 import com.example.core.extensions.setTextIfChanged
 import com.example.dagger2_app.HomeNavigator
-import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
@@ -31,7 +30,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddNoteFragment : Fragment() {
-    private lateinit var binding:FragmentAddBinding
+    private lateinit var binding: FragmentAddBinding
+
     @Inject
     lateinit var viewModel: AddNoteViewModel
 
@@ -50,7 +50,6 @@ class AddNoteFragment : Fragment() {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +57,8 @@ class AddNoteFragment : Fragment() {
         binding = FragmentAddBinding.inflate(layoutInflater)
         val coreComponent = (requireActivity().application as MyApplication).appComponent
         val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
-            HomeAppModule(requireContext())).homeViewModelModule(HomeViewModelModule()).build()
+            HomeAppModule(requireContext())
+        ).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
         setNavigation()
@@ -76,12 +76,16 @@ class AddNoteFragment : Fragment() {
 
     }
 
-    private fun setupEditTextValues(){
+    private fun setupEditTextValues() {
         viewModel.onIntent(AddNoteIntent.OnSetTitle(arguments?.getString(ARG_TITLE) ?: ""))
-        viewModel.onIntent(AddNoteIntent.OnSetDescription(arguments?.getString(ARG_DESCRIPTION) ?: ""))
+        viewModel.onIntent(
+            AddNoteIntent.OnSetDescription(
+                arguments?.getString(ARG_DESCRIPTION) ?: ""
+            )
+        )
     }
 
-    private fun editTextListener(){
+    private fun editTextListener() {
         binding.etTitle.doAfterTextChanged {
             val title = it?.toString().orEmpty()
             viewModel.onIntent(AddNoteIntent.OnSetTitle(title))
@@ -94,14 +98,14 @@ class AddNoteFragment : Fragment() {
 
     }
 
-    private fun handleSubmit(){
+    private fun handleSubmit() {
         binding.btnSubmit.setOnClickListener {
             viewModel.onIntent(AddNoteIntent.OnAddNote)
         }
     }
 
 
-    private fun handleStateListener(){
+    private fun handleStateListener() {
         lifecycleScope.launch {
             viewModel.state.collect {
                 binding.etTitle.setTextIfChanged(it.title)
@@ -110,24 +114,35 @@ class AddNoteFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            viewModel.effect.collect {effect->
-                when(effect){
+            viewModel.effect.collect { effect ->
+                when (effect) {
                     AddNoteUiEffect.NotifyInsertion -> {
-                        val snackbar = Snackbar.make(requireView(),"Successfully added", Snackbar.LENGTH_SHORT)
-                        snackbar.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+                        val snackbar = Snackbar.make(
+                            requireView(),
+                            "Successfully added",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        snackbar.view.setBackgroundColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
                         snackbar.setBackgroundTint(resources.getColor(R.color.green))
                         snackbar.show()
 
-                        viewModel.onIntent(AddNoteIntent.OnNavigateBack)}
-                    is AddNoteUiEffect.ShowSnackbar ->{
-                        Snackbar.make(requireView(),effect.message, Snackbar.LENGTH_SHORT).show()
+                        viewModel.onIntent(AddNoteIntent.OnNavigateBack)
+                    }
+
+                    is AddNoteUiEffect.ShowSnackbar -> {
+                        Snackbar.make(requireView(), effect.message, Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
-    private fun setNavigation(){
+    private fun setNavigation() {
         binding.btnBack.setOnClickListener {
             viewModel.onIntent(AddNoteIntent.OnNavigateBack)
         }

@@ -7,7 +7,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [ProfileAppModule::class, ProfileViewModelModule::class], dependencies = [CoreComponent::class])
+@Component(
+    modules = [ProfileAppModule::class, ProfileViewModelModule::class],
+    dependencies = [CoreComponent::class]
+)
 interface AppComponent {
 
     fun inject(profileActivity: ProfileActivity)

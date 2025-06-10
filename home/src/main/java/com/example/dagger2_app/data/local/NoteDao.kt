@@ -12,10 +12,10 @@ import com.example.dagger2_app.models.NoteEntity
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(noteEntity: NoteEntity):Long
+    suspend fun insert(noteEntity: NoteEntity): Long
 
     @Query("Select * from notes")
-    suspend fun getNotes():List<NoteEntity>
+    suspend fun getNotes(): List<NoteEntity>
 
     @Delete
     suspend fun remove(note: NoteEntity)

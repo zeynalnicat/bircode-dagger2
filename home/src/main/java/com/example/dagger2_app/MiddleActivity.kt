@@ -13,7 +13,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.core.di.DaggerCoreComponent
 import com.example.core.di.MyApplication
-import com.example.dagger2_app.data.local.Injection
 import com.example.dagger2_app.di.AppComponent
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
@@ -29,7 +28,7 @@ import javax.inject.Inject
 class MiddleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMiddleBinding
 
-    private lateinit var resultLauncher : ActivityResultLauncher<Intent>
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
@@ -37,7 +36,7 @@ class MiddleActivity : AppCompatActivity() {
     @Inject
     lateinit var router: Router
 
-    private val appNavigator = AppNavigator(this,R.id.main)
+    private val appNavigator = AppNavigator(this, R.id.main)
 
     private lateinit var appComponent: AppComponent
 
@@ -45,11 +44,12 @@ class MiddleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding= ActivityMiddleBinding.inflate(layoutInflater)
+        binding = ActivityMiddleBinding.inflate(layoutInflater)
 
         val coreComponent = (application as MyApplication).appComponent
         appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).homeAppModule(
-            HomeAppModule(this)).homeViewModelModule(HomeViewModelModule()).build()
+            HomeAppModule(this)
+        ).homeViewModelModule(HomeViewModelModule()).build()
         appComponent.inject(this)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -65,7 +65,7 @@ class MiddleActivity : AppCompatActivity() {
 
     }
 
-    private fun handleNavigation(){
+    private fun handleNavigation() {
         binding.btnNext.setOnClickListener {
 
             router.navigateTo(HomeNavigator.HomeActivityScreen())
@@ -77,13 +77,14 @@ class MiddleActivity : AppCompatActivity() {
     }
 
 
-    private fun setResultLauncher(){
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if(it.resultCode == RESULT_OK){
-                val userId = it.data?.getIntExtra("userId",-1)
-                binding.txtUserId.text = "UserId: ${userId}"
+    private fun setResultLauncher() {
+        resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == RESULT_OK) {
+                    val userId = it.data?.getIntExtra("userId", -1)
+                    binding.txtUserId.text = "UserId: ${userId}"
+                }
             }
-        }
 
     }
 

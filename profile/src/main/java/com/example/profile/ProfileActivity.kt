@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
 import com.example.core.di.MyApplication
-import com.example.profile.data.ProfileInjection
 import com.example.profile.databinding.ActivityProfileBinding
 import com.example.profile.di.DaggerAppComponent
 import com.example.profile.di.ProfileAppModule
@@ -29,13 +28,13 @@ class ProfileActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ProfileViewModel
-    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            viewModel.onIntent(ProfileIntent.OnChangeProfileUri(it.toString()))
-            binding.profileImageView.setImageURI(it)
+    private val selectImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                viewModel.onIntent(ProfileIntent.OnChangeProfileUri(it.toString()))
+                binding.profileImageView.setImageURI(it)
+            }
         }
-    }
-
 
 
     private lateinit var binding: ActivityProfileBinding
@@ -43,8 +42,10 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         val coreComponent = (application as MyApplication).appComponent
-        val appComponent = DaggerAppComponent.builder().coreComponent(coreComponent).profileAppModule(
-            ProfileAppModule(this)).profileViewModelModule(ProfileViewModelModule()).build()
+        val appComponent =
+            DaggerAppComponent.builder().coreComponent(coreComponent).profileAppModule(
+                ProfileAppModule(this)
+            ).profileViewModelModule(ProfileViewModelModule()).build()
 
         appComponent.inject(this)
         enableEdgeToEdge()
@@ -59,7 +60,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun handleOnSelectImage(){
+    private fun handleOnSelectImage() {
 
         binding.profileImageContainer.setOnClickListener {
             selectImageLauncher.launch("image/*")
@@ -67,20 +68,20 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun handleOnFetchState(){
+    private fun handleOnFetchState() {
         viewModel.getName()
         viewModel.getImgUri()
 
     }
 
-    private fun handleNavigation(){
+    private fun handleNavigation() {
         binding.btnBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
     }
 
-    private fun handleOnSave(){
+    private fun handleOnSave() {
 
         binding.saveButton.setOnClickListener {
             viewModel.onIntent(ProfileIntent.OnChangeName(binding.editName.text.toString()))
@@ -90,26 +91,31 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    private fun handleStateListener(){
+    private fun handleStateListener() {
         lifecycleScope.launch {
-            viewModel.state.collect { state->
-                if(state.insertion){
-                    val snackbar = Snackbar.make(binding.root,"Successfully changed", Snackbar.LENGTH_SHORT)
-                    snackbar.view.setBackgroundColor(ContextCompat.getColor(this@ProfileActivity, R.color.green))
+            viewModel.state.collect { state ->
+                if (state.insertion) {
+                    val snackbar =
+                        Snackbar.make(binding.root, "Successfully changed", Snackbar.LENGTH_SHORT)
+                    snackbar.view.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@ProfileActivity,
+                            R.color.green
+                        )
+                    )
                     snackbar.setBackgroundTint(resources.getColor(R.color.green))
                     snackbar.show()
                 }
 
-                if(state.profileUri.isEmpty()){
+                if (state.profileUri.isEmpty()) {
                     binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
-                }
-                else{
+                } else {
                     Glide.with(this@ProfileActivity)
                         .load(state.profileUri)
                         .into(binding.profileImageView)
                 }
 
-                if(state.username.isNotEmpty()){
+                if (state.username.isNotEmpty()) {
                     binding.editName.setText(state.username)
                 }
 
@@ -118,7 +124,6 @@ class ProfileActivity : AppCompatActivity() {
 
         }
     }
-
 
 
 }

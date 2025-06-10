@@ -3,7 +3,7 @@ package com.example.core.di
 import android.app.Application
 
 
-class MyApplication: Application() {
+class MyApplication : Application() {
 
     lateinit var appComponent: CoreComponent
 
@@ -14,8 +14,6 @@ class MyApplication: Application() {
 
 
     }
-
-
 
 
 }

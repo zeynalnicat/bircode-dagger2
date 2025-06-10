@@ -7,7 +7,7 @@ import com.example.dagger2_app.models.NoteEntity
 
 
 @Database(entities = [NoteEntity::class], version = 3)
-abstract class RoomDb: RoomDatabase() {
+abstract class RoomDb : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
 
