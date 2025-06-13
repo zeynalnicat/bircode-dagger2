@@ -1,35 +1,42 @@
 package com.example.dagger2_app.ui.fragments.add
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 
-import androidx.navigation.fragment.findNavController
-import com.example.core.constants.AppKeys
+
 import com.example.core.constants.AppKeys.ARG_DESCRIPTION
 import com.example.core.constants.AppKeys.ARG_TITLE
 import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
 import com.example.core.extensions.setTextIfChanged
+import com.example.dagger2_app.HomeActivity
 import com.example.dagger2_app.HomeNavigator
+import com.example.dagger2_app.MiddleActivity
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
-import com.example.dagger2_app.models.NoteDTO
 import com.example.home.R
 
 import com.example.home.databinding.FragmentAddBinding
 import com.github.terrakok.cicerone.Router
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +45,8 @@ class AddNoteFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: AddNoteViewModel
-
+    private val channelID = "banking"
+    private var notificationManager: NotificationManager? = null
     companion object {
 
         fun newInstance(title: String, description: String): AddNoteFragment {
@@ -52,6 +60,8 @@ class AddNoteFragment : Fragment() {
     }
 
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +73,8 @@ class AddNoteFragment : Fragment() {
         ).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
+        notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        createNotification()
         setNavigation()
         return binding.root
     }
@@ -76,6 +88,28 @@ class AddNoteFragment : Fragment() {
         handleSubmit()
 
 
+    }
+    private fun createNotification(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(channelID, AppStrings.appTitle,importance).apply {
+                description = AppStrings.successfulOperation
+            }
+            notificationManager?.createNotificationChannel(channel)
+
+        }
+    }
+
+    private fun displayNotification(){
+
+        val notificationId= 45
+        val notification : Notification = NotificationCompat.Builder(requireActivity(),channelID)
+            .setContentTitle(AppStrings.appTitle)
+            .setContentText(AppStrings.successfulInsertionNote)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH).build()
+        notificationManager?.notify(notificationId,notification)
     }
 
     private fun setupEditTextValues() {
@@ -132,7 +166,7 @@ class AddNoteFragment : Fragment() {
                         )
                         snackbar.setBackgroundTint(resources.getColor(R.color.green))
                         snackbar.show()
-
+                        displayNotification()
                         viewModel.onIntent(AddNoteIntent.OnNavigateBack)
                     }
 
