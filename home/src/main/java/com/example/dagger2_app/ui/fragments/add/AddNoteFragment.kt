@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
+
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 
@@ -25,16 +24,13 @@ import com.example.core.constants.AppKeys.ARG_TITLE
 import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
 import com.example.core.extensions.setTextIfChanged
-import com.example.dagger2_app.HomeActivity
-import com.example.dagger2_app.HomeNavigator
-import com.example.dagger2_app.MiddleActivity
+
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.home.R
 
 import com.example.home.databinding.FragmentAddBinding
-import com.github.terrakok.cicerone.Router
 import com.google.android.material.snackbar.Snackbar
 
 import kotlinx.coroutines.launch
