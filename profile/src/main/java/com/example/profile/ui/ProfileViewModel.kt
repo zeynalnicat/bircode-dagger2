@@ -2,6 +2,7 @@ package com.example.profile.ui
 
 
 import androidx.lifecycle.ViewModel
+import com.example.core.constants.AppKeys
 import com.example.profile.data.local.SharedPreferenceHelper
 import com.example.profile.ui.ProfileState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,21 +25,21 @@ class ProfileViewModel @Inject constructor(private val sharedPreferenceHelper: S
     }
 
     fun getImgUri(){
-        _state.update { it.copy(profileUri = sharedPreferenceHelper.getString(SharedPreferenceHelper.IMG_URI, "") ?: "" ) }
+        _state.update { it.copy(profileUri = sharedPreferenceHelper.getString(AppKeys.IMG_URI, "") ?: "" ) }
 
     }
 
     fun getName(){
-        _state.update { it.copy(username =sharedPreferenceHelper.getString(SharedPreferenceHelper.NAME, "") ?: "") }
+        _state.update { it.copy(username =sharedPreferenceHelper.getString(AppKeys.NAME, "") ?: "") }
     }
 
     private fun addImgUri(img: String){
-        sharedPreferenceHelper.putString(SharedPreferenceHelper.IMG_URI,img)
+        sharedPreferenceHelper.putString(AppKeys.IMG_URI,img)
         _state.update { it.copy(profileUri = img) }
     }
 
     private fun addName(name:String){
-        sharedPreferenceHelper.putString(SharedPreferenceHelper.NAME,name)
+        sharedPreferenceHelper.putString(AppKeys.NAME,name)
         _state.update { it.copy(username = name, insertion = true) }
 
     }
