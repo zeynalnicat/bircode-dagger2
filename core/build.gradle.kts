@@ -50,4 +50,5 @@ dependencies {
     implementation(libs.dagger)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.github.terrakok:cicerone:7.1")
+    implementation("androidx.core:core-ktx:1.16.0")
 }
