@@ -12,6 +12,10 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
+import com.example.core.constants.AppKeys
+import com.example.core.constants.AppKeys.ARG_DESCRIPTION
+import com.example.core.constants.AppKeys.ARG_TITLE
+import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
 import com.example.core.extensions.setTextIfChanged
 import com.example.dagger2_app.HomeNavigator
@@ -36,13 +40,11 @@ class AddNoteFragment : Fragment() {
     lateinit var viewModel: AddNoteViewModel
 
     companion object {
-        private const val ARG_TITLE = "arg_title"
-        private const val ARG_DESCRIPTION = "arg_description"
 
         fun newInstance(title: String, description: String): AddNoteFragment {
             val fragment = AddNoteFragment()
             fragment.arguments = Bundle().apply {
-                putString(ARG_TITLE, title)
+                putString(ARG_TITLE,title)
                 putString(ARG_DESCRIPTION, description)
             }
             return fragment
@@ -119,7 +121,7 @@ class AddNoteFragment : Fragment() {
                     AddNoteUiEffect.NotifyInsertion -> {
                         val snackbar = Snackbar.make(
                             requireView(),
-                            "Successfully added",
+                            AppStrings.successfulOperation,
                             Snackbar.LENGTH_SHORT
                         )
                         snackbar.view.setBackgroundColor(

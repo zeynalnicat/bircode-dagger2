@@ -4,10 +4,12 @@ import android.content.res.TypedArray
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
+import com.example.dagger2_app.models.NoteEntity
 import com.example.dagger2_app.models.mapToEntity
 import com.example.dagger2_app.utils.extension.map
 import com.github.terrakok.cicerone.Router
@@ -50,13 +52,15 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     }
 
     private fun getNotes() {
-
+        var noteResult : List<NoteEntity> = emptyList()
         launch(
             onError = { e ->
-                _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: "Unknown Error"))
+                _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: AppStrings.unknownError))
+            },
+            onCallMethod = {
+                noteResult = noteDao.getNotes()
             },
             onSuccess = {
-                val noteResult = noteDao.getNotes()
                 _state.update { it.copy(notes = noteResult.map { it.map() }) }
             }
         )
@@ -69,12 +73,12 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             onError = { e ->
                 _effect.emit(
                     HomeUiEffect.ShowSnackbar(
-                        e.message ?: "Unknown Error"
+                        e.message ?: AppStrings.unknownError
                     )
                 )
             },
+            onCallMethod = {noteDao.remove(note.mapToEntity())},
             onSuccess = {
-                noteDao.remove(note.mapToEntity())
                 val modifiedList = _state.value.notes.toMutableList()
                 modifiedList.remove(note)
                 _state.update { it.copy(notes = modifiedList.toList()) }

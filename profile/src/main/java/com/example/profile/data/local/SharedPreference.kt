@@ -31,7 +31,6 @@ class SharedPreferenceHelper(context: Context) {
 
     companion object {
         private const val PREFS_NAME = "app_prefs"
-        const val IMG_URI = "imgUri"
-        const val NAME = "name"
+
     }
 }

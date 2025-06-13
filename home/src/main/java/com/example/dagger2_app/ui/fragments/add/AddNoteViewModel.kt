@@ -3,6 +3,7 @@ package com.example.dagger2_app.ui.fragments.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
@@ -37,21 +38,27 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
     }
 
     private fun addNote() {
+        var insertion = -1L
 
         launch(
             onError = { e ->
                 _effect.emit(
                     AddNoteUiEffect.ShowSnackbar(
-                        e.message ?: "Couldn't insert"
+                        e.message ?: AppStrings.insertionError
                     )
                 )
             },
-            onSuccess = {
+            onCallMethod = {
                 val note = NoteDTO(0, _state.value.title, _state.value.description)
-                if (noteDao.insert(note.mapToEntity()) != -1L) {
-                    _effect.emit(AddNoteUiEffect.NotifyInsertion)
+                insertion = noteDao.insert(note.mapToEntity())
+            },
+            onSuccess = {
+                if (insertion!=-1L) {
+                   _effect.emit(AddNoteUiEffect.NotifyInsertion)
+
                 } else {
-                    _effect.emit(AddNoteUiEffect.ShowSnackbar("Couldn't insert"))
+                     _effect.emit(AddNoteUiEffect.ShowSnackbar(AppStrings.insertionError))
+
 
                 }
             }

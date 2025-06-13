@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.bumptech.glide.Glide
+import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
+import com.example.core.extensions.setTextIfChanged
 import com.example.profile.databinding.ActivityProfileBinding
 import com.example.profile.di.DaggerAppComponent
 import com.example.profile.di.ProfileAppModule
@@ -96,7 +98,7 @@ class ProfileActivity : AppCompatActivity() {
             viewModel.state.collect { state ->
                 if (state.insertion) {
                     val snackbar =
-                        Snackbar.make(binding.root, "Successfully changed", Snackbar.LENGTH_SHORT)
+                        Snackbar.make(binding.root, AppStrings.successfulChange, Snackbar.LENGTH_SHORT)
                     snackbar.view.setBackgroundColor(
                         ContextCompat.getColor(
                             this@ProfileActivity,
@@ -116,7 +118,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
                 if (state.username.isNotEmpty()) {
-                    binding.editName.setText(state.username)
+                    binding.editName.setTextIfChanged(state.username)
                 }
 
             }
