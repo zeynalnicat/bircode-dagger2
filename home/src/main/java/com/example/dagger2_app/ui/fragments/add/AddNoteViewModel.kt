@@ -7,20 +7,21 @@ import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
+import com.example.dagger2_app.ui.fragments.home.HomeUiEffect
 import com.example.dagger2_app.utils.extension.mapToEntity
 import com.github.terrakok.cicerone.Router
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Router) : ViewModel() {
 
-    private val _state = MutableStateFlow(AddNoteState())
+class AddNoteViewModel @AssistedInject constructor(val noteDao: NoteDao, val router: Router, @Assisted val noteDTO: NoteDTO) : ViewModel() {
+
+    private val _state = MutableStateFlow(AddNoteState(noteDTO.id,noteDTO.title,noteDTO.description))
 
     val state: StateFlow<AddNoteState> = _state.asStateFlow()
 
@@ -30,47 +31,49 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
 
     fun onIntent(intent: AddNoteIntent) {
         when (intent) {
-            is AddNoteIntent.OnAddNote -> addNote(intent.isUpdate)
+            is AddNoteIntent.OnAddNote -> addNote(intent.title,intent.description)
             AddNoteIntent.OnNavigateBack -> router.exit()
-            is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
-            is AddNoteIntent.OnSetTitle -> _state.update { it.copy(title = intent.title) }
-            is AddNoteIntent.OnSetId -> _state.update { it.copy(id =intent.id) }
         }
     }
 
-    private fun addNote(isUpdate: Boolean) {
+    private fun addNote(title:String, description:String) {
         var insertion = -1L
 
         launch(
-            onError = { e ->
-                _effect.emit(
-                    AddNoteUiEffect.ShowSnackbar(
-                        e.message ?: AppStrings.insertionError
-                    )
-                )
-            },
-            onCallMethod = {
-                if(!isUpdate){
-                    val note = NoteDTO(0, _state.value.title, _state.value.description)
+            onError = ::handleError
+        )
+        {
+                if(noteDTO.id==-1){
+                    val note = NoteDTO(0, title, description)
                     insertion = noteDao.insert(note.mapToEntity())
                 }
                 else{
-                    val note = NoteDTO(_state.value.id, _state.value.title, _state.value.description)
+                    val note = NoteDTO(noteDTO.id,title, description)
                     insertion = noteDao.update(note.mapToEntity()).toLong()
                 }
 
-            },
-            onSuccess = {
                 if (insertion!=-1L) {
-                   _effect.emit(AddNoteUiEffect.NotifyInsertion)
+                    _effect.emit(AddNoteUiEffect.NotifyInsertion)
 
                 } else {
-                     _effect.emit(AddNoteUiEffect.ShowSnackbar(AppStrings.insertionError))
+                    _effect.emit(AddNoteUiEffect.ShowSnackbar(AppStrings.insertionError))
 
 
                 }
             }
-        )
+
+
     }
+
+    private suspend  fun handleError(e: Exception){
+        _effect.emit(
+            AddNoteUiEffect.ShowSnackbar(
+                e.message ?: AppStrings.unknownError
+            )
+        )
+
+    }
+
+
 
 }

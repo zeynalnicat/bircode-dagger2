@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private val router: Router) :
@@ -30,10 +32,12 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     // AssistedInject   (edit sehifesi paramatrlerle)
     // Viewmodel ext. launch  .
 
+
+
+
     private val _state = MutableStateFlow(HomeState())
 
     val state: StateFlow<HomeState> = _state.asStateFlow()
-
     private val _effect = MutableSharedFlow<HomeUiEffect>()
     val effect = _effect.asSharedFlow()
 
@@ -44,7 +48,7 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             HomeIntent.OnFinishChain -> router.finishChain()
             is HomeIntent.OnNavigateToAddNoteFragment -> router.navigateTo(
                 HomeNavigator.AddNotesFragmentScreen(
-                    -1,
+                    intent.id,
                     intent.title,
                     intent.description
                 )
@@ -58,32 +62,33 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             onError = { e ->
                 _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: AppStrings.unknownError))
             },
-            onCallMethod = {
-                noteResult = noteDao.getNotes()
-            },
-            onSuccess = {
-                _state.update { it.copy(notes = noteResult.map { it.mapToDTO() }) }
-            }
-        )
+        ){
+            noteResult = noteDao.getNotes()
+            _state.update { it.copy(notes = noteResult.map { it.mapToDTO() }) }
+        }
 
     }
 
     private fun removeNote(note: NoteDTO) {
-
         launch(
-            onError = { e ->
-                _effect.emit(
-                    HomeUiEffect.ShowSnackbar(
-                        e.message ?: AppStrings.unknownError
-                    )
-                )
-            },
-            onCallMethod = {noteDao.remove(note.mapToEntity())},
-            onSuccess = {
-                val modifiedList = _state.value.notes.toMutableList()
-                modifiedList.remove(note)
-                _state.update { it.copy(notes = modifiedList.toList()) }
+            onError = ::handleError
+        ) {
+            noteDao.remove(note.mapToEntity())
+            val modifiedList = _state.value.notes.toMutableList()
+            modifiedList.remove(note)
+            _state.update {
+                it.copy(notes = modifiedList.toList())
             }
-        )
+
+        }
+    }
+
+    private suspend  fun handleError(e: Exception){
+            _effect.emit(
+                HomeUiEffect.ShowSnackbar(
+                    e.message ?: AppStrings.unknownError
+                )
+            )
+
     }
 }

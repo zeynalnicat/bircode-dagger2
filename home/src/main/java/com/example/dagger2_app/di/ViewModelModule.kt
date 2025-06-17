@@ -19,10 +19,5 @@ class HomeViewModelModule {
         return HomeViewModel(noteDao, router)
     }
 
-    @Provides
-    @Singleton
-    fun provideAddNoteViewModel(noteDao: NoteDao, router: Router): AddNoteViewModel {
-        return AddNoteViewModel(noteDao, router)
-    }
 
 }

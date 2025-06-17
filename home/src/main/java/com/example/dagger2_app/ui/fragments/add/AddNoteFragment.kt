@@ -8,7 +8,6 @@ import android.content.Context
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,10 +24,12 @@ import com.example.core.constants.AppKeys.ARG_TITLE
 import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
 import com.example.core.extensions.setTextIfChanged
+import com.example.dagger2_app.di.AddNoteViewModelFactory
 
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
+import com.example.dagger2_app.models.NoteDTO
 import com.example.home.R
 
 import com.example.home.databinding.FragmentAddBinding
@@ -41,7 +42,9 @@ class AddNoteFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
 
     @Inject
-    lateinit var viewModel: AddNoteViewModel
+    lateinit var viewModelFactory: AddNoteViewModelFactory
+
+    private lateinit var viewModel: AddNoteViewModel
     private val channelID = "banking"
     private var notificationManager: NotificationManager? = null
     companion object {
@@ -60,6 +63,7 @@ class AddNoteFragment : Fragment() {
 
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +75,7 @@ class AddNoteFragment : Fragment() {
         ).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
+        setupViewModel()
         notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotification()
         setNavigation()
@@ -79,10 +84,9 @@ class AddNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupEditTextValues()
+
         handleStateListener()
 
-        editTextListener()
         handleSubmit()
 
 
@@ -110,57 +114,34 @@ class AddNoteFragment : Fragment() {
         notificationManager?.notify(notificationId,notification)
     }
 
-    private fun setupEditTextValues() {
-        viewModel.onIntent(AddNoteIntent.OnSetId(arguments?.getInt(ARG_ID)?:-1))
-        viewModel.onIntent(AddNoteIntent.OnSetTitle(arguments?.getString(ARG_TITLE) ?: ""))
-        viewModel.onIntent(
-            AddNoteIntent.OnSetDescription(
-                arguments?.getString(ARG_DESCRIPTION) ?: ""
-            )
-        )
-    }
-
-    private fun editTextListener() {
-        binding.etTitle.doAfterTextChanged {
-            val title = it?.toString().orEmpty()
-            viewModel.onIntent(AddNoteIntent.OnSetTitle(title))
-        }
-
-        binding.etDescription.doAfterTextChanged {
-            val desc = it?.toString().orEmpty()
-            viewModel.onIntent(AddNoteIntent.OnSetDescription(desc))
-        }
+    private fun setupViewModel() {
+        val note = NoteDTO(arguments?.getInt(ARG_ID)?:-1,arguments?.getString(ARG_TITLE) ?: "", arguments?.getString(ARG_DESCRIPTION) ?: "")
+        viewModel = viewModelFactory.create(note)
 
     }
+
 
     private fun handleSubmit() {
         lifecycleScope.launch {
-
-            viewModel.state.collect {
-                  if(it.id != -1){
-                      binding.btnSubmit.setOnClickListener {
-                          viewModel.onIntent(AddNoteIntent.OnAddNote())
-                      }
-
-                  }else{
-                      binding.btnSubmit.setOnClickListener {
-                          viewModel.onIntent(AddNoteIntent.OnAddNote(true))
-                      }
-                  }
-            }
+             binding.btnSubmit.setOnClickListener {
+                 viewModel.onIntent(AddNoteIntent.OnAddNote(binding.etTitle.text.toString(),binding.etDescription.text.toString()))
+             }
 
         }
 
     }
 
 
+
     private fun handleStateListener() {
+
         lifecycleScope.launch {
             viewModel.state.collect {
-                binding.etTitle.setTextIfChanged(it.title)
-                binding.etDescription.setTextIfChanged(it.description)
+                binding.etDescription.setText( it.description)
+                binding.etTitle.setText(it.title)
             }
         }
+
 
         lifecycleScope.launch {
             viewModel.effect.collect { effect ->

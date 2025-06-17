@@ -139,6 +139,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
     override fun click(noteDTO: NoteDTO) {
         homeViewModel.onIntent(
             HomeIntent.OnNavigateToAddNoteFragment(
+                noteDTO.id,
                 noteDTO.title,
                 noteDTO.description
             )
