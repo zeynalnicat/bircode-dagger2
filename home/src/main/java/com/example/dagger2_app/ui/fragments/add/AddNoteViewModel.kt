@@ -7,7 +7,7 @@ import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
-import com.example.dagger2_app.models.mapToEntity
+import com.example.dagger2_app.utils.extension.mapToEntity
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
