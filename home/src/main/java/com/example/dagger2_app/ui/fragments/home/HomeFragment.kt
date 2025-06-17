@@ -22,6 +22,8 @@ import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
 import com.example.home.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,6 +50,17 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         ).homeViewModelModule(HomeViewModelModule()).build()
 
         appComponent.inject(this)
+
+//        val flowExample = MutableSharedFlow<Int>(replay = 1, extraBufferCapacity = 2)
+//
+//        lifecycleScope.launch {
+//            flowExample.collect {
+//                Log.e("Flow",it.toString())
+//            }
+//        }
+
+
+
 
 
 
