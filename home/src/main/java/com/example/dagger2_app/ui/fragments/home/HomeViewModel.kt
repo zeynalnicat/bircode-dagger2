@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             HomeIntent.OnFinishChain -> router.finishChain()
             is HomeIntent.OnNavigateToAddNoteFragment -> router.navigateTo(
                 HomeNavigator.AddNotesFragmentScreen(
+                    -1,
                     intent.title,
                     intent.description
                 )
