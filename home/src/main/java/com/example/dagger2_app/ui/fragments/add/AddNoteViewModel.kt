@@ -7,7 +7,7 @@ import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
-import com.example.dagger2_app.ui.fragments.home.HomeUiEffect
+
 import com.example.dagger2_app.utils.extension.mapToEntity
 import com.github.terrakok.cicerone.Router
 import dagger.assisted.Assisted

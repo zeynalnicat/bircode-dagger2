@@ -1,9 +1,7 @@
 package com.example.dagger2_app.ui.fragments.home
 
-import android.content.res.TypedArray
-import android.util.Log
+
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.HomeNavigator
@@ -18,9 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private val router: Router) :
@@ -59,9 +55,7 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     private fun getNotes() {
         var noteResult : List<NoteEntity> = emptyList()
         launch(
-            onError = { e ->
-                _effect.emit(HomeUiEffect.ShowSnackbar(e.message ?: AppStrings.unknownError))
-            },
+            onError = ::handleError
         ){
             noteResult = noteDao.getNotes()
             _state.update { it.copy(notes = noteResult.map { it.mapToDTO() }) }
