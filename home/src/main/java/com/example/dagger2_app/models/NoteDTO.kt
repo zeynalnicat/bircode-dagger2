@@ -7,6 +7,3 @@ data class NoteDTO(
 )
 
 
-fun NoteDTO.mapToEntity(): NoteEntity {
-    return NoteEntity(this.id, this.title, this.description)
-}

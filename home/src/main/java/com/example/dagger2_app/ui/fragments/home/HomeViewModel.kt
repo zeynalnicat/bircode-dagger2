@@ -10,8 +10,8 @@ import com.example.dagger2_app.HomeNavigator
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.models.NoteEntity
-import com.example.dagger2_app.models.mapToEntity
-import com.example.dagger2_app.utils.extension.map
+import com.example.dagger2_app.utils.extension.mapToDTO
+import com.example.dagger2_app.utils.extension.mapToEntity
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
             HomeIntent.OnFinishChain -> router.finishChain()
             is HomeIntent.OnNavigateToAddNoteFragment -> router.navigateTo(
                 HomeNavigator.AddNotesFragmentScreen(
+                    -1,
                     intent.title,
                     intent.description
                 )
@@ -61,7 +62,7 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
                 noteResult = noteDao.getNotes()
             },
             onSuccess = {
-                _state.update { it.copy(notes = noteResult.map { it.map() }) }
+                _state.update { it.copy(notes = noteResult.map { it.mapToDTO() }) }
             }
         )
 

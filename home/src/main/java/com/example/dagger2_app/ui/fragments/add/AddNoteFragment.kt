@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 
 
 import com.example.core.constants.AppKeys.ARG_DESCRIPTION
+import com.example.core.constants.AppKeys.ARG_ID
 import com.example.core.constants.AppKeys.ARG_TITLE
 import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
@@ -45,9 +46,10 @@ class AddNoteFragment : Fragment() {
     private var notificationManager: NotificationManager? = null
     companion object {
 
-        fun newInstance(title: String, description: String): AddNoteFragment {
+        fun newInstance(id:Int,title: String, description: String): AddNoteFragment {
             val fragment = AddNoteFragment()
             fragment.arguments = Bundle().apply {
+                putInt(ARG_ID,id)
                 putString(ARG_TITLE,title)
                 putString(ARG_DESCRIPTION, description)
             }
@@ -109,6 +111,7 @@ class AddNoteFragment : Fragment() {
     }
 
     private fun setupEditTextValues() {
+        viewModel.onIntent(AddNoteIntent.OnSetId(arguments?.getInt(ARG_ID)?:-1))
         viewModel.onIntent(AddNoteIntent.OnSetTitle(arguments?.getString(ARG_TITLE) ?: ""))
         viewModel.onIntent(
             AddNoteIntent.OnSetDescription(
@@ -131,9 +134,23 @@ class AddNoteFragment : Fragment() {
     }
 
     private fun handleSubmit() {
-        binding.btnSubmit.setOnClickListener {
-            viewModel.onIntent(AddNoteIntent.OnAddNote)
+        lifecycleScope.launch {
+
+            viewModel.state.collect {
+                  if(it.id != -1){
+                      binding.btnSubmit.setOnClickListener {
+                          viewModel.onIntent(AddNoteIntent.OnAddNote())
+                      }
+
+                  }else{
+                      binding.btnSubmit.setOnClickListener {
+                          viewModel.onIntent(AddNoteIntent.OnAddNote(true))
+                      }
+                  }
+            }
+
         }
+
     }
 
 

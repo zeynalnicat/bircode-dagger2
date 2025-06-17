@@ -7,7 +7,7 @@ import com.example.core.constants.AppStrings
 import com.example.core.extensions.launch
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteDTO
-import com.example.dagger2_app.models.mapToEntity
+import com.example.dagger2_app.utils.extension.mapToEntity
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,14 +30,15 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
 
     fun onIntent(intent: AddNoteIntent) {
         when (intent) {
-            is AddNoteIntent.OnAddNote -> addNote()
+            is AddNoteIntent.OnAddNote -> addNote(intent.isUpdate)
             AddNoteIntent.OnNavigateBack -> router.exit()
             is AddNoteIntent.OnSetDescription -> _state.update { it.copy(description = intent.description) }
             is AddNoteIntent.OnSetTitle -> _state.update { it.copy(title = intent.title) }
+            is AddNoteIntent.OnSetId -> _state.update { it.copy(id =intent.id) }
         }
     }
 
-    private fun addNote() {
+    private fun addNote(isUpdate: Boolean) {
         var insertion = -1L
 
         launch(
@@ -49,8 +50,15 @@ class AddNoteViewModel @Inject constructor(val noteDao: NoteDao, val router: Rou
                 )
             },
             onCallMethod = {
-                val note = NoteDTO(0, _state.value.title, _state.value.description)
-                insertion = noteDao.insert(note.mapToEntity())
+                if(!isUpdate){
+                    val note = NoteDTO(0, _state.value.title, _state.value.description)
+                    insertion = noteDao.insert(note.mapToEntity())
+                }
+                else{
+                    val note = NoteDTO(_state.value.id, _state.value.title, _state.value.description)
+                    insertion = noteDao.update(note.mapToEntity()).toLong()
+                }
+
             },
             onSuccess = {
                 if (insertion!=-1L) {
