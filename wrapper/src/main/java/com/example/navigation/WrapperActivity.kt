@@ -35,7 +35,7 @@ class WrapperActivity : AppCompatActivity() {
         }
 
         binding.btnNote.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, AppLinks.MIDDLE_PAGE.toUri())
+            val intent = Intent(Intent.ACTION_VIEW, AppLinks.HOME_PAGE.toUri())
             startActivity(intent)
         }
 

@@ -4,7 +4,6 @@ package com.example.profile.ui
 import androidx.lifecycle.ViewModel
 import com.example.core.constants.AppKeys
 import com.example.profile.data.local.SharedPreferenceHelper
-import com.example.profile.ui.ProfileState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

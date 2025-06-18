@@ -1,11 +1,14 @@
 package com.example.dagger2_app.ui.adapters
 
+import android.content.res.Resources
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dagger2_app.models.NoteDTO
+import com.example.home.R
 import com.example.home.databinding.ItemNotesLayoutBinding
 
 class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
@@ -16,6 +19,7 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
     }
 
     private var listener: ICallback? = null
+    private val colors  = listOf(R.color.blue,R.color.yellow,R.color.lightGreen,R.color.orange)
 
 
     private val diffCallBack = object : DiffUtil.ItemCallback<NoteDTO>() {
@@ -49,6 +53,8 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemNotesLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(noteDTO: NoteDTO) {
+            binding.cardView.setCardBackgroundColor(binding.root.resources.getColor(colors[layoutPosition%colors.size]))
+
             binding.tvTitle.text = noteDTO.title
             binding.tvDescription.text = noteDTO.description
             binding.btnRemove.setOnClickListener {
