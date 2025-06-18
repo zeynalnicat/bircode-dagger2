@@ -1,11 +1,13 @@
 package com.example.dagger2_app.ui.fragments.home
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -134,12 +136,13 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         binding.rvNotes.adapter = adapter
     }
 
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun setNavigation() {
         binding.fbAdd.setOnClickListener {
             homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment())
         }
 
-        binding.btnBack.setOnClickListener {
+        binding.toolbar?.onClickListener {
             homeViewModel.onIntent(HomeIntent.OnFinishChain)
 
         }

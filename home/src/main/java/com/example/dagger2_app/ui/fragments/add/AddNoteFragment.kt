@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -172,8 +173,9 @@ class AddNoteFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun setNavigation() {
-        binding.btnBack.setOnClickListener {
+        binding.toolbar.onClickListener {
             viewModel.onIntent(AddNoteIntent.OnNavigateBack)
         }
     }

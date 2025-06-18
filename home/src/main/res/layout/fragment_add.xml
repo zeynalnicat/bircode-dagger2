@@ -6,18 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.add.AddNoteFragment">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Note"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:textStyle="bold"
+    <com.example.dagger2_app.ui.components.CustomToolBar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:title_text="Add note"
+        app:textColor="@color/black"
+        app:containerColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="11" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -30,7 +29,7 @@
         app:layout_constraintVertical_bias="0.2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
         android:id="@+id/etTitle"
@@ -57,16 +56,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etTitle" />
-
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_margin="16dp"
-        android:backgroundTint="@android:color/transparent"
-        android:src="@drawable/icon_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etDescription"
