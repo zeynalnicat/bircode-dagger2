@@ -71,15 +71,16 @@
         app:layout_constraintStart_toStartOf="@+id/tvTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.dagger2_app.ui.components.AnimatedButton
         android:id="@+id/btnSubmit"
         android:layout_width="0dp"
-        android:backgroundTint="@android:color/holo_blue_bright"
         android:layout_height="wrap_content"
         android:text="Add"
         android:textColor="@color/white"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="@+id/etDescription"
         app:layout_constraintStart_toStartOf="@+id/etDescription"
-        app:layout_constraintTop_toBottomOf="@+id/etDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/etDescription"
+        tools:targetApi="12" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

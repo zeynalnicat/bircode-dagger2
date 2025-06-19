@@ -10,9 +10,9 @@
     <com.example.dagger2_app.ui.components.CustomToolBar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        app:textColor="@color/white"
+        app:textColor="@color/black"
         android:layout_height="70dp"
-        app:containerColor="#009688"
+        app:containerColor="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:title_text="Notes"
