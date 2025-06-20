@@ -39,15 +39,12 @@ class AddNoteViewModel @AssistedInject constructor(val noteDao: NoteDao, val rou
     private fun addNote(title:String, description:String) {
         var insertion = -1L
 
-        launch(
-            onError = ::handleError
-        )
+        launch(onError = ::handleError)
         {
                 if(noteDTO.id==-1){
                     val note = NoteDTO(0, title, description)
                     insertion = noteDao.insert(note.mapToEntity())
-                }
-                else{
+                } else{
                     val note = NoteDTO(noteDTO.id,title, description)
                     insertion = noteDao.update(note.mapToEntity()).toLong()
                 }
@@ -57,11 +54,8 @@ class AddNoteViewModel @AssistedInject constructor(val noteDao: NoteDao, val rou
 
                 } else {
                     _effect.emit(AddNoteUiEffect.ShowSnackbar(AppStrings.insertionError))
-
-
                 }
             }
-
 
     }
 
@@ -71,7 +65,6 @@ class AddNoteViewModel @AssistedInject constructor(val noteDao: NoteDao, val rou
                 e.message ?: AppStrings.unknownError
             )
         )
-
     }
 
 

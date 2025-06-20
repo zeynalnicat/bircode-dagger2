@@ -31,6 +31,7 @@ import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.models.NoteDTO
+import com.example.dagger2_app.models.TextType
 import com.example.home.R
 
 import com.example.home.databinding.FragmentAddBinding
@@ -77,6 +78,7 @@ class AddNoteFragment : Fragment() {
 
         appComponent.inject(this)
         setupViewModel()
+//        binding.toolbar.title = TextType.TResource(R.string.hello_blank_fragment)
         notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotification()
         setNavigation()

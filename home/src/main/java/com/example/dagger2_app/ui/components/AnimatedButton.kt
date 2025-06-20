@@ -10,7 +10,6 @@ import androidx.appcompat.widget.AppCompatButton
 import com.example.home.R
 
 @SuppressLint("ClickableViewAccessibility")
-@RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR1)
 class AnimatedButton @JvmOverloads constructor(context: Context, attrs: AttributeSet?=null):
     AppCompatButton(context,attrs) {
 

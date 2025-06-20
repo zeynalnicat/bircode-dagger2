@@ -10,6 +10,9 @@ plugins {
 android {
     namespace = "com.example.home"
     compileSdk = 35
+    defaultConfig   {
+        minSdk = 24
+    }
 
     room {
         schemaDirectory("$projectDir/schemas")

@@ -2,50 +2,88 @@ package com.example.dagger2_app.ui.components
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.util.AttributeSet
-import android.widget.Button
+import android.view.LayoutInflater
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import com.example.dagger2_app.models.ImageType
+import com.example.dagger2_app.models.TextType
 import com.example.home.R
+import com.example.home.databinding.CustomToolbarBinding
 
-@RequiresApi(Build.VERSION_CODES.HONEYCOMB)
 class CustomToolBar @JvmOverloads constructor(
     context: Context,
-                     attrs: AttributeSet? = null,
-                     defStyleAttr: Int = 0): LinearLayout(context,attrs,defStyleAttr) {
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
 
     private var txtTitle: TextView
     private var root: ConstraintLayout
+    private var image: ImageView
+    var title: TextType
+        set(value) {
+            when(value){
+                is TextType.TString  -> {
+                    txtTitle.setText(value.text)
+                }
+                is TextType.TResource -> {
+                    txtTitle.setText(value.text)
+                }
+            }
+        }
+        get() {
+            return TextType.TString(txtTitle.text.toString())
+        }
+
+    var imageSrc: ImageType
+        set(value) {
+            when(value){
+                is ImageType.Resource -> image.setImageResource(value.src)
+                is ImageType.Drawable -> image.setImageDrawable(value.src)
+            }
+        }
+
+        get() {
+            return ImageType.Drawable(image.drawable)
+        }
     private var buttonBack: AppCompatImageButton
+    private var binding: CustomToolbarBinding =
+        CustomToolbarBinding.inflate(LayoutInflater.from(context),this,true)
 
     init {
-        inflate(context,R.layout.custom_toolbar,this)
-        txtTitle = findViewById<TextView>(R.id.tvTitle)
-        root = findViewById<ConstraintLayout>(R.id.root)
-        buttonBack = findViewById<AppCompatImageButton>(R.id.imgBack)
-        attrs?.let { setAttributes(context, it,defStyleAttr) }
+        txtTitle = binding.tvTitle
+        root = binding.root
+        image = binding.imgAction
+        buttonBack = binding.imgBack as AppCompatImageButton
+        attrs?.let { setAttributes(context, it, defStyleAttr) }
     }
 
-    private fun setAttributes(context: Context,attrs: AttributeSet,defStyleAttr: Int){
 
-         val style = context.obtainStyledAttributes(attrs,R.styleable.CustomToolBar,defStyleAttr,0)
-         val txtTitle = style.getString(R.styleable.CustomToolBar_title_text,)
-         val txtColor = style.getColor(R.styleable.CustomToolBar_textColor, Color.BLACK)
-         val containerColor = style.getColor(R.styleable.CustomToolBar_containerColor, Color.WHITE)
-         if(txtTitle!=null){
-             this.txtTitle.text = txtTitle
-         }
+    private fun setAttributes(context: Context, attrs: AttributeSet, defStyleAttr: Int) {
 
-        if(ColorUtils.calculateLuminance(containerColor)<0.5){
+        val style =
+            context.obtainStyledAttributes(attrs, R.styleable.CustomToolBar, defStyleAttr, 0)
+        val txtTitle = style.getString(R.styleable.CustomToolBar_title_text)
+        val txtColor = style.getColor(R.styleable.CustomToolBar_textColor, Color.BLACK)
+        val containerColor = style.getColor(R.styleable.CustomToolBar_containerColor, Color.WHITE)
+        val src = style.getInt(R.styleable.CustomToolBar_srcCompat,-1)
+
+        if(src!=-1){
+            image.setImageResource(src)
+        }
+
+        if (txtTitle != null) {
+            this.txtTitle.text = txtTitle
+        }
+
+        if (ColorUtils.calculateLuminance(containerColor) < 0.5) {
             buttonBack.setImageResource(R.drawable.icon_back_white)
-        }else{
+        } else {
             buttonBack.setImageResource(R.drawable.icon_back)
         }
 
@@ -55,11 +93,11 @@ class CustomToolBar @JvmOverloads constructor(
 
     }
 
-    fun setTitle(text:String){
-         txtTitle.text = text
+    fun setTitle(text: String) {
+        txtTitle.text = text
     }
 
-    fun onClickListener(block:()->Unit){
+    fun onClickListener(block: () -> Unit) {
         buttonBack.setOnClickListener {
             block()
         }
