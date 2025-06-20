@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -17,6 +18,7 @@ import com.example.core.di.MyApplication
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
+import com.example.dagger2_app.models.ImageType
 
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
@@ -89,7 +91,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         setupOnBackPress()
         handleStateListener()
         handleOnFetchNotes()
-
 
     }
 

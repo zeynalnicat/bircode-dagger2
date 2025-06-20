@@ -71,7 +71,7 @@ class CustomToolBar @JvmOverloads constructor(
         val txtTitle = style.getString(R.styleable.CustomToolBar_title_text)
         val txtColor = style.getColor(R.styleable.CustomToolBar_textColor, Color.BLACK)
         val containerColor = style.getColor(R.styleable.CustomToolBar_containerColor, Color.WHITE)
-        val src = style.getInt(R.styleable.CustomToolBar_srcCompat,-1)
+        val src = style.getInt(R.styleable.CustomToolBar_src,-1)
 
         if(src!=-1){
             image.setImageResource(src)
