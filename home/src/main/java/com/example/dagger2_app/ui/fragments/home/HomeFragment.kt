@@ -14,6 +14,7 @@ import com.example.core.di.MyApplication
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
+import com.example.dagger2_app.models.ImageType
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
@@ -58,7 +59,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 //            }
 //        }
 
-
+//        binding.toolbar.imageSrc = ImageType.IResource(R.drawable.bg_background)
         return binding.root
     }
 

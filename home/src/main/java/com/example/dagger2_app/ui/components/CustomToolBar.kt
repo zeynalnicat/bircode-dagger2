@@ -44,12 +44,13 @@ class CustomToolBar @JvmOverloads constructor(
     var imageSrc: ImageType
         set(value) {
             when (value) {
-                is ImageType.Resource -> image.setImageResource(value.src)
-                is ImageType.Drawable -> image.setImageDrawable(value.src)
+                is ImageType.IResource -> image.setImageResource(value.src)
+                is ImageType.IDrawable -> image.setImageDrawable(value.src)
+                is ImageType.IColor -> image.setBackgroundColor(value.src)
             }
         }
         get() {
-            return ImageType.Drawable(image.drawable)
+            return ImageType.IDrawable(image.drawable)
         }
     private var buttonBack: AppCompatImageButton
     private var binding: CustomToolbarBinding =
