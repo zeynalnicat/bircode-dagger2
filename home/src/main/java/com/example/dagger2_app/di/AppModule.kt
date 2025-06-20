@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.data.local.RoomDb
 import com.example.dagger2_app.ui.adapters.NotesAdapter
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

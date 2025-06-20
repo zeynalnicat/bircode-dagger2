@@ -6,7 +6,7 @@ import com.example.profile.data.local.ProfileDao
 import com.example.profile.models.ProfileEntity
 
 @Database(entities = [ProfileEntity::class], version = 3)
-abstract class RoomDb: RoomDatabase() {
+abstract class RoomDb : RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao
 

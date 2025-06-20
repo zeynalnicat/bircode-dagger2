@@ -27,10 +27,11 @@ class CustomToolBar @JvmOverloads constructor(
     private var image: ImageView
     var title: TextType
         set(value) {
-            when(value){
-                is TextType.TString  -> {
+            when (value) {
+                is TextType.TString -> {
                     txtTitle.setText(value.text)
                 }
+
                 is TextType.TResource -> {
                     txtTitle.setText(value.text)
                 }
@@ -42,18 +43,17 @@ class CustomToolBar @JvmOverloads constructor(
 
     var imageSrc: ImageType
         set(value) {
-            when(value){
+            when (value) {
                 is ImageType.Resource -> image.setImageResource(value.src)
                 is ImageType.Drawable -> image.setImageDrawable(value.src)
             }
         }
-
         get() {
             return ImageType.Drawable(image.drawable)
         }
     private var buttonBack: AppCompatImageButton
     private var binding: CustomToolbarBinding =
-        CustomToolbarBinding.inflate(LayoutInflater.from(context),this,true)
+        CustomToolbarBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
         txtTitle = binding.tvTitle
@@ -71,9 +71,9 @@ class CustomToolBar @JvmOverloads constructor(
         val txtTitle = style.getString(R.styleable.CustomToolBar_title_text)
         val txtColor = style.getColor(R.styleable.CustomToolBar_textColor, Color.BLACK)
         val containerColor = style.getColor(R.styleable.CustomToolBar_containerColor, Color.WHITE)
-        val src = style.getInt(R.styleable.CustomToolBar_src,-1)
+        val src = style.getInt(R.styleable.CustomToolBar_src, -1)
 
-        if(src!=-1){
+        if (src != -1) {
             image.setImageResource(src)
         }
 

@@ -2,7 +2,6 @@ package com.example.dagger2_app.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.dagger2_app.data.local.NoteDao
 import com.example.dagger2_app.models.NoteEntity
 
 

@@ -1,42 +1,33 @@
 package com.example.dagger2_app.ui.fragments.add
 
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-
-
 import com.example.core.constants.AppKeys.ARG_DESCRIPTION
 import com.example.core.constants.AppKeys.ARG_ID
 import com.example.core.constants.AppKeys.ARG_TITLE
 import com.example.core.constants.AppStrings
 import com.example.core.di.MyApplication
-import com.example.core.extensions.setTextIfChanged
 import com.example.dagger2_app.di.AddNoteViewModelFactory
-
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
 import com.example.dagger2_app.models.NoteDTO
-import com.example.dagger2_app.models.TextType
 import com.example.home.R
-
 import com.example.home.databinding.FragmentAddBinding
 import com.google.android.material.snackbar.Snackbar
-
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

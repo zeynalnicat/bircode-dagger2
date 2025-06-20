@@ -1,25 +1,19 @@
 package com.example.dagger2_app.ui.fragments.home
 
-import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.core.di.MyApplication
 import com.example.dagger2_app.di.DaggerAppComponent
 import com.example.dagger2_app.di.HomeAppModule
 import com.example.dagger2_app.di.HomeViewModelModule
-import com.example.dagger2_app.models.ImageType
-
 import com.example.dagger2_app.models.NoteDTO
 import com.example.dagger2_app.ui.adapters.NotesAdapter
 import com.example.home.R
@@ -63,10 +57,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 //                Log.e("Flow",it.toString())
 //            }
 //        }
-
-
-
-
 
 
         return binding.root
@@ -137,7 +127,6 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
         binding.rvNotes.adapter = adapter
     }
 
-    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun setNavigation() {
         binding.fbAdd.setOnClickListener {
             homeViewModel.onIntent(HomeIntent.OnNavigateToAddNoteFragment())

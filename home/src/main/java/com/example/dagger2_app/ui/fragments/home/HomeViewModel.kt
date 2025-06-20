@@ -29,8 +29,6 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     // Viewmodel ext. launch  .
 
 
-
-
     private val _state = MutableStateFlow(HomeState())
 
     val state: StateFlow<HomeState> = _state.asStateFlow()
@@ -53,10 +51,10 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
     }
 
     private fun getNotes() {
-        var noteResult : List<NoteEntity> = emptyList()
+        var noteResult: List<NoteEntity> = emptyList()
         launch(
             onError = ::handleError
-        ){
+        ) {
             noteResult = noteDao.getNotes()
             _state.update { it.copy(notes = noteResult.map { it.mapToDTO() }) }
         }
@@ -77,12 +75,12 @@ class HomeViewModel @Inject constructor(private val noteDao: NoteDao, private va
         }
     }
 
-    private suspend  fun handleError(e: Exception){
-            _effect.emit(
-                HomeUiEffect.ShowSnackbar(
-                    e.message ?: AppStrings.unknownError
-                )
+    private suspend fun handleError(e: Exception) {
+        _effect.emit(
+            HomeUiEffect.ShowSnackbar(
+                e.message ?: AppStrings.unknownError
             )
+        )
 
     }
 }

@@ -97,12 +97,12 @@ class ProfileActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 if (state.insertion) {
-                    val snackbar =
-                        Snackbar.make(binding.root, AppStrings.successfulChange, Snackbar.LENGTH_SHORT)
+                    val snackbar = Snackbar.make(
+                        binding.root, AppStrings.successfulChange, Snackbar.LENGTH_SHORT
+                    )
                     snackbar.view.setBackgroundColor(
                         ContextCompat.getColor(
-                            this@ProfileActivity,
-                            R.color.green
+                            this@ProfileActivity, R.color.green
                         )
                     )
                     snackbar.setBackgroundTint(resources.getColor(R.color.green))
@@ -112,8 +112,7 @@ class ProfileActivity : AppCompatActivity() {
                 if (state.profileUri.isEmpty()) {
                     binding.profileImageView.setImageResource(R.drawable.profile_placeholder)
                 } else {
-                    Glide.with(this@ProfileActivity)
-                        .load(state.profileUri)
+                    Glide.with(this@ProfileActivity).load(state.profileUri)
                         .into(binding.profileImageView)
                 }
 
