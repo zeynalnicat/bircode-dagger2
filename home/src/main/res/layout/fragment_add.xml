@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:targetApi="11" />
 
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"

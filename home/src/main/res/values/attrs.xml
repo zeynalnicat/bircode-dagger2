@@ -8,4 +8,9 @@
           <attr name="containerColor" format="color"  />
           <attr name="src" format="integer"/>
       </declare-styleable>
+
+    <declare-styleable name="DRibbon">
+        <attr name="color" format="color"/>
+        <attr name="title" format="string"/>
+    </declare-styleable>
 </resources>
