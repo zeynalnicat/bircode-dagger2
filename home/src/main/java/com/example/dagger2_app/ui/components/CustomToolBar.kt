@@ -1,5 +1,6 @@
 package com.example.dagger2_app.ui.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
@@ -69,6 +70,8 @@ class CustomToolBar @JvmOverloads constructor(
 
         val style =
             context.obtainStyledAttributes(attrs, R.styleable.CustomToolBar, defStyleAttr, 0)
+
+
         val txtTitle = style.getString(R.styleable.CustomToolBar_title_text)
         val txtColor = style.getColor(R.styleable.CustomToolBar_textColor, Color.BLACK)
         val containerColor = style.getColor(R.styleable.CustomToolBar_containerColor, Color.WHITE)
@@ -91,11 +94,14 @@ class CustomToolBar @JvmOverloads constructor(
         this.txtTitle.setTextColor(txtColor)
         this.root.setBackgroundColor(containerColor)
 
-
     }
 
     fun setTitle(text: String) {
         txtTitle.text = text
+    }
+
+    fun setTitle(resId:Int){
+        txtTitle.setText(resId)
     }
 
     fun onClickListener(block: () -> Unit) {

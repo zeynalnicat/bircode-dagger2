@@ -1,5 +1,6 @@
 package com.example.dagger2_app.ui.fragments.home
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,7 +60,7 @@ class HomeFragment : Fragment(), NotesAdapter.ICallback {
 //            }
 //        }
 
-//        binding.toolbar.imageSrc = ImageType.IResource(R.drawable.bg_background)
+        binding.toolbar.imageSrc = ImageType.IResource(R.drawable.bg_background)
         return binding.root
     }
 
